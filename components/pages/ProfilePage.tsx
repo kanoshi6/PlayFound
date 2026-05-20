@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import {
   Check,
   Copy,
   Gamepad2,
   Heart,
+  ImagePlus,
   Palette,
   Send,
   User,
@@ -23,15 +24,7 @@ import {
 import { games } from "@/lib/games";
 import { usePlayFound } from "@/lib/settings-context";
 
-const colorOptions = [
-  "#9af2bf",
-  "#38d574",
-  "#5bd9d0",
-  "#f0bc5e",
-  "#ff8ab0",
-  "#b49cff",
-  "#ffffff"
-];
+const colorOptions = ["#9af2bf", "#38d574", "#5bd9d0", "#f0bc5e", "#ff8ab0", "#b49cff", "#ffffff"];
 
 export function ProfilePage() {
   const {
@@ -49,6 +42,7 @@ export function ProfilePage() {
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<AuthError | null>(null);
   const [copied, setCopied] = useState(false);
+  const [avatarValue, setAvatarValue] = useState("");
 
   const refreshUsers = () => {
     setUsers(getUsers());
@@ -67,6 +61,12 @@ export function ProfilePage() {
 
     return users.find((item) => item.id === currentUser.id) ?? currentUser;
   }, [currentUser, users]);
+
+  useEffect(() => {
+    if (user?.avatarUrl) {
+      setAvatarValue(user.avatarUrl);
+    }
+  }, [user?.avatarUrl]);
 
   const libraryGames = useMemo(() => {
     const ids = new Set([...(user?.libraryGameIds ?? []), ...wishlistIds]);
@@ -102,13 +102,42 @@ export function ProfilePage() {
     );
   }
 
+  const onAvatarFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setError("invalidAvatar");
+      setStatus(null);
+      return;
+    }
+
+    if (file.size > 900_000) {
+      setError("invalidAvatar");
+      setStatus(null);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setAvatarValue(reader.result);
+        setError(null);
+        setStatus("Аватар выбран. Нажми “Сохранить профиль”, чтобы применить его.");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const onProfileSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const result = updateProfile({
       displayName: String(formData.get("displayName") ?? ""),
       about: String(formData.get("about") ?? ""),
-      avatarUrl: String(formData.get("avatarUrl") ?? ""),
+      avatarUrl: avatarValue,
       nicknameColor: String(formData.get("nicknameColor") ?? "#9af2bf")
     });
 
@@ -119,7 +148,7 @@ export function ProfilePage() {
     }
 
     setError(null);
-    setStatus("Профиль обновлён. Модерация имени, описания и аватарки пройдена.");
+    setStatus("Профиль обновлён. Ник, описание и аватар прошли mock-модерацию.");
     refreshUsers();
   };
 
@@ -181,16 +210,12 @@ export function ProfilePage() {
 
   return (
     <section className="container-shell section-pad">
-      <div className="grid gap-8 lg:grid-cols-[20rem_1fr] lg:items-start">
+      <div className="grid gap-8 lg:grid-cols-[21rem_1fr] lg:items-start">
         <aside className="surface sticky top-28 rounded-[1.75rem] p-5">
           <div className="relative mx-auto h-36 w-36 overflow-hidden rounded-[2rem] border border-[var(--line-strong)] bg-[color-mix(in_srgb,var(--accent)_14%,transparent)] shadow-glow">
-            {user.avatarUrl ? (
+            {avatarValue ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={user.avatarUrl}
-                alt={user.displayName}
-                className="h-full w-full object-cover"
-              />
+              <img src={avatarValue} alt={user.displayName} className="h-full w-full object-cover" />
             ) : (
               <div className="grid h-full w-full place-items-center">
                 <User size={54} color="var(--accent-2)" />
@@ -198,19 +223,12 @@ export function ProfilePage() {
             )}
           </div>
 
-          <h1
-            className="mt-5 break-words text-center text-3xl font-black"
-            style={{ color: user.nicknameColor }}
-          >
+          <h1 className="mt-5 break-words text-center text-3xl font-black" style={{ color: user.nicknameColor }}>
             {user.displayName}
           </h1>
           <p className="mt-2 text-center text-sm font-bold muted">@{user.username}</p>
 
-          <button
-            type="button"
-            className="btn btn-secondary mt-5 w-full"
-            onClick={copyPlayerId}
-          >
+          <button type="button" className="btn btn-secondary mt-5 w-full" onClick={copyPlayerId}>
             <Copy size={17} />
             {copied ? "ID скопирован" : user.playerId}
           </button>
@@ -224,31 +242,50 @@ export function ProfilePage() {
           <form className="mt-5 grid gap-3" onSubmit={onFriendSubmit}>
             <label className="grid gap-2">
               <span className="text-sm font-black">Добавить друга по ID</span>
-              <input
-                className="input"
-                name="playerId"
-                placeholder="PF-12345678"
-                autoComplete="off"
-              />
+              <input className="input" name="playerId" placeholder="PF-12345678" autoComplete="off" />
             </label>
             <button type="submit" className="btn btn-primary">
               <UserPlus size={17} />
               Отправить заявку
             </button>
           </form>
+
+          <div className="mt-5 border-t border-[var(--line)] pt-5">
+            <h2 className="text-lg font-black">Заявки в друзья</h2>
+            <div className="mt-3 grid gap-3">
+              {incomingRequests.length > 0 ? (
+                incomingRequests.map(({ request, from }) => (
+                  <article className="rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4" key={request.id}>
+                    <p className="font-black">{from?.displayName ?? "Игрок"}</p>
+                    <p className="mt-1 text-sm muted">{from?.playerId ?? "ID не найден"}</p>
+                    <div className="mt-3 flex gap-2">
+                      <button type="button" className="btn btn-primary h-10 px-3" onClick={() => accept(request.id)}>
+                        <Check size={16} />
+                      </button>
+                      <button type="button" className="btn btn-ghost h-10 px-3" onClick={() => decline(request.id)}>
+                        <X size={16} />
+                      </button>
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <p className="text-sm leading-6 muted">Новых заявок нет.</p>
+              )}
+            </div>
+          </div>
         </aside>
 
         <div className="grid gap-6">
-          <section className="glass-card rounded-[1.75rem] p-6">
+          <section className="glass-card rounded-[1.75rem] p-6 reveal-card">
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
               <div>
                 <span className="eyebrow">
                   <Palette size={15} />
                   Профиль игрока
                 </span>
-                <h2 className="mt-4 text-3xl font-black">Настрой внешний вид</h2>
+                <h2 className="mt-4 text-3xl font-black">Внешний вид, библиотека и друзья</h2>
                 <p className="mt-3 max-w-3xl leading-7 muted">
-                  Здесь игрок меняет аватарку, ник, цвет ника, описание, смотрит библиотеку и управляет друзьями. В прототипе всё хранится в localStorage.
+                  Аватар загружается как файл с компьютера, ник и описание проходят простую mock-модерацию, а цвет ника выбирается без лишних цифр в интерфейсе.
                 </p>
               </div>
               <Link href="/catalog" className="btn btn-secondary">
@@ -264,44 +301,24 @@ export function ProfilePage() {
                   <input className="input" name="displayName" defaultValue={user.displayName} />
                 </label>
                 <label className="grid gap-2">
-                  <span className="text-sm font-black">URL аватарки</span>
-                  <input
-                    className="input"
-                    name="avatarUrl"
-                    defaultValue={user.avatarUrl}
-                    placeholder="https://site.com/avatar.png"
-                  />
+                  <span className="text-sm font-black">Аватарка с компьютера</span>
+                  <span className="relative">
+                    <input className="input file:mr-4 file:rounded-full file:border-0 file:bg-[var(--accent)] file:px-3 file:py-1.5 file:font-black file:text-[var(--accent-contrast)]" type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={onAvatarFile} />
+                    <ImagePlus className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--muted)]" size={18} />
+                  </span>
                 </label>
               </div>
               <label className="grid gap-2">
                 <span className="text-sm font-black">О себе</span>
-                <textarea
-                  className="input min-h-28 resize-y"
-                  name="about"
-                  defaultValue={user.about}
-                  placeholder="Во что играешь, что разрабатываешь, какие жанры любишь"
-                />
+                <textarea className="input min-h-28 resize-y" name="about" defaultValue={user.about} placeholder="Любимые жанры, активность, что ищешь на PlayFound" />
               </label>
               <div className="grid gap-3">
                 <span className="text-sm font-black">Цвет ника</span>
                 <div className="flex flex-wrap gap-2">
                   {colorOptions.map((color) => (
-                    <label
-                      className="flex cursor-pointer items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--panel-soft)] px-3 py-2 text-sm font-bold"
-                      key={color}
-                    >
-                      <input
-                        type="radio"
-                        name="nicknameColor"
-                        value={color}
-                        defaultChecked={user.nicknameColor === color}
-                        className="sr-only"
-                      />
-                      <span
-                        className="h-5 w-5 rounded-full border border-white/20"
-                        style={{ background: color }}
-                      />
-                      {color}
+                    <label className={`grid h-11 w-11 cursor-pointer place-items-center rounded-full border transition hover:scale-105 ${user.nicknameColor === color ? "border-[var(--accent)] bg-[var(--panel-soft)]" : "border-[var(--line)] bg-[var(--panel-soft)]"}`} key={color} title={color}>
+                      <input type="radio" name="nicknameColor" value={color} defaultChecked={user.nicknameColor === color} className="sr-only" />
+                      <span className="h-5 w-5 rounded-full border border-white/20" style={{ background: color }} />
                     </label>
                   ))}
                 </div>
@@ -310,81 +327,30 @@ export function ProfilePage() {
               {error ? <StatusBox type="error" text={profileErrorText(error)} /> : null}
               {status ? <StatusBox type="success" text={status} /> : null}
 
-              <button type="submit" className="btn btn-primary justify-self-start">
-                Сохранить профиль
-              </button>
+              <button type="submit" className="btn btn-primary justify-self-start">Сохранить профиль</button>
             </form>
           </section>
 
-          <section className="grid gap-6 xl:grid-cols-2">
-            <div className="surface rounded-[1.75rem] p-6">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="text-2xl font-black">Заявки в друзья</h2>
-                <span className="tag">под аватаркой</span>
-              </div>
-              <div className="mt-5 grid gap-3">
-                {incomingRequests.length > 0 ? (
-                  incomingRequests.map(({ request, from }) => (
-                    <article
-                      className="rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4"
-                      key={request.id}
-                    >
-                      <p className="font-black">
-                        {from?.displayName ?? "Игрок"} хочет добавить тебя в друзья
-                      </p>
-                      <p className="mt-1 text-sm muted">ID: {from?.playerId ?? "не найден"}</p>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={() => accept(request.id)}
-                        >
-                          <Check size={16} />
-                          Принять
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-ghost"
-                          onClick={() => decline(request.id)}
-                        >
-                          <X size={16} />
-                          Отклонить
-                        </button>
-                      </div>
-                    </article>
-                  ))
-                ) : (
-                  <p className="leading-7 muted">Новых заявок нет. Отправь другу свой ID, чтобы он мог найти тебя.</p>
-                )}
-              </div>
-            </div>
-
-            <div className="surface rounded-[1.75rem] p-6">
-              <h2 className="text-2xl font-black">Друзья</h2>
-              <div className="mt-5 grid gap-3">
-                {friendUsers.length > 0 ? (
-                  friendUsers.map((friend) => (
-                    <div
-                      className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4"
-                      key={friend.id}
-                    >
-                      <div>
-                        <p className="font-black" style={{ color: friend.nicknameColor }}>
-                          {friend.displayName}
-                        </p>
-                        <p className="text-sm muted">{friend.playerId}</p>
-                      </div>
-                      <span className="tag">online mock</span>
+          <section className="surface rounded-[1.75rem] p-6 reveal-card">
+            <h2 className="text-2xl font-black">Друзья</h2>
+            <div className="mt-5 grid gap-3 md:grid-cols-2">
+              {friendUsers.length > 0 ? (
+                friendUsers.map((friend) => (
+                  <div className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4" key={friend.id}>
+                    <div>
+                      <p className="font-black" style={{ color: friend.nicknameColor }}>{friend.displayName}</p>
+                      <p className="text-sm muted">{friend.playerId}</p>
                     </div>
-                  ))
-                ) : (
-                  <p className="leading-7 muted">Список друзей пуст. Добавление работает по индивидуальному ID игрока.</p>
-                )}
-              </div>
+                    <span className="tag">online mock</span>
+                  </div>
+                ))
+              ) : (
+                <p className="leading-7 muted">Список друзей пуст. Добавление работает по индивидуальному ID игрока.</p>
+              )}
             </div>
           </section>
 
-          <section className="glass-card rounded-[1.75rem] p-6">
+          <section className="glass-card rounded-[1.75rem] p-6 reveal-card">
             <div className="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-end">
               <div>
                 <span className="eyebrow">
@@ -393,20 +359,14 @@ export function ProfilePage() {
                 </span>
                 <h2 className="mt-4 text-3xl font-black">Игры и избранное</h2>
               </div>
-              <Link href="/catalog" className="btn btn-secondary">
-                Открыть каталог
-              </Link>
+              <Link href="/catalog" className="btn btn-secondary">Открыть каталог</Link>
             </div>
             {libraryGames.length > 0 ? (
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {libraryGames.map((game) => (
-                  <GameCard game={game} key={game.id} />
-                ))}
+                {libraryGames.map((game) => <GameCard game={game} key={game.id} />)}
               </div>
             ) : (
-              <p className="leading-7 muted">
-                Библиотека пока пустая. Добавляй игры в wishlist — они появятся здесь.
-              </p>
+              <p className="leading-7 muted">Библиотека пока пустая. Добавляй игры в wishlist — они появятся здесь.</p>
             )}
           </section>
         </div>
@@ -415,27 +375,13 @@ export function ProfilePage() {
   );
 }
 
-function AccessCard({
-  title,
-  text,
-  actionHref,
-  action
-}: {
-  title: string;
-  text: string;
-  actionHref?: string;
-  action?: string;
-}) {
+function AccessCard({ title, text, actionHref, action }: { title: string; text: string; actionHref?: string; action?: string }) {
   return (
     <section className="container-shell flex min-h-[70vh] items-center py-20">
       <div className="glass-card max-w-2xl rounded-[1.5rem] p-8">
         <h1 className="text-4xl font-black">{title}</h1>
         <p className="mt-4 leading-7 muted">{text}</p>
-        {actionHref && action ? (
-          <Link href={actionHref} className="btn btn-primary mt-6">
-            {action}
-          </Link>
-        ) : null}
+        {actionHref && action ? <Link href={actionHref} className="btn btn-primary mt-6">{action}</Link> : null}
       </div>
     </section>
   );
@@ -454,13 +400,7 @@ function StatusBox({ type, text }: { type: "success" | "error"; text: string }) 
   const success = type === "success";
 
   return (
-    <div
-      className={`rounded-2xl border p-4 font-bold ${
-        success
-          ? "border-[var(--line-strong)] bg-[color-mix(in_srgb,var(--accent)_13%,transparent)] text-[var(--accent-2)]"
-          : "border-[color-mix(in_srgb,var(--danger)_45%,transparent)] bg-[color-mix(in_srgb,var(--danger)_10%,transparent)] text-[var(--danger)]"
-      }`}
-    >
+    <div className={`rounded-2xl border p-4 font-bold ${success ? "border-[var(--line-strong)] bg-[color-mix(in_srgb,var(--accent)_13%,transparent)] text-[var(--accent-2)]" : "border-[color-mix(in_srgb,var(--danger)_45%,transparent)] bg-[color-mix(in_srgb,var(--danger)_10%,transparent)] text-[var(--danger)]"}`}>
       {text}
     </div>
   );
@@ -469,7 +409,7 @@ function StatusBox({ type, text }: { type: "success" | "error"; text: string }) 
 function profileErrorText(error: AuthError) {
   const messages: Record<string, string> = {
     badWords: "Модерация отклонила текст: убери мат, оскорбления или запрещённые слова.",
-    invalidAvatar: "Аватарка должна быть прямой https-ссылкой на png, jpg, jpeg, webp или gif.",
+    invalidAvatar: "Аватар должен быть изображением png, jpg, jpeg, webp или gif до 900 KB.",
     friendNotFound: "Игрок с таким ID не найден.",
     friendSelf: "Нельзя добавить самого себя.",
     friendAlreadyExists: "Этот игрок уже в друзьях.",

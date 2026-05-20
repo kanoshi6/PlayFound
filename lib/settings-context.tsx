@@ -14,10 +14,25 @@ import {
   translations
 } from "@/lib/translations";
 
-export type ThemeName = "darkGreen" | "pureDark" | "light";
+export type ThemeName =
+  | "darkGreen"
+  | "pureDark"
+  | "light"
+  | "streetStyle"
+  | "pixel90s"
+  | "darkNeon"
+  | "fantasyScroll"
+  | "arcadeClub"
+  | "horrorVhs"
+  | "softIndie";
+
+export type Currency = "USD" | "EUR" | "RUB" | "GBP" | "PLN" | "UAH" | "CNY" | "JPY" | "KRW";
+export type MarketLanguage = "ru" | "en" | "es" | "de" | "fr" | "pl" | "uk" | "zh" | "ja" | "ko";
 
 export type PlayFoundSettings = {
   language: Language;
+  marketLanguage: MarketLanguage;
+  currency: Currency;
   theme: ThemeName;
   compactMode: boolean;
   reduceAnimations: boolean;
@@ -34,17 +49,59 @@ type PlayFoundContextValue = {
   wishlistCount: number;
   isWishlisted: (gameId: string) => boolean;
   toggleWishlist: (gameId: string) => boolean;
+  formatPrice: (priceType: "free" | "paid", seed?: number) => string;
 };
 
 const defaultSettings: PlayFoundSettings = {
   language: "ru",
+  marketLanguage: "ru",
+  currency: "RUB",
   theme: "darkGreen",
   compactMode: false,
   reduceAnimations: false
 };
 
-const settingsKey = "playfound-settings-v1";
+const settingsKey = "playfound-settings-v2";
 const wishlistKey = "playfound-wishlist-v1";
+
+const currencies: Currency[] = ["USD", "EUR", "RUB", "GBP", "PLN", "UAH", "CNY", "JPY", "KRW"];
+const marketLanguages: MarketLanguage[] = ["ru", "en", "es", "de", "fr", "pl", "uk", "zh", "ja", "ko"];
+const themes: ThemeName[] = [
+  "darkGreen",
+  "pureDark",
+  "light",
+  "streetStyle",
+  "pixel90s",
+  "darkNeon",
+  "fantasyScroll",
+  "arcadeClub",
+  "horrorVhs",
+  "softIndie"
+];
+
+const rates: Record<Currency, number> = {
+  USD: 1,
+  EUR: 0.92,
+  RUB: 92,
+  GBP: 0.79,
+  PLN: 3.95,
+  UAH: 40,
+  CNY: 7.2,
+  JPY: 155,
+  KRW: 1370
+};
+
+const currencySymbols: Record<Currency, string> = {
+  USD: "$",
+  EUR: "€",
+  RUB: "₽",
+  GBP: "£",
+  PLN: "zł",
+  UAH: "₴",
+  CNY: "¥",
+  JPY: "¥",
+  KRW: "₩"
+};
 
 const PlayFoundContext = createContext<PlayFoundContextValue | null>(null);
 
@@ -52,8 +109,16 @@ function isLanguage(value: unknown): value is Language {
   return value === "ru" || value === "en";
 }
 
+function isMarketLanguage(value: unknown): value is MarketLanguage {
+  return typeof value === "string" && marketLanguages.includes(value as MarketLanguage);
+}
+
+function isCurrency(value: unknown): value is Currency {
+  return typeof value === "string" && currencies.includes(value as Currency);
+}
+
 function isTheme(value: unknown): value is ThemeName {
-  return value === "darkGreen" || value === "pureDark" || value === "light";
+  return typeof value === "string" && themes.includes(value as ThemeName);
 }
 
 function sanitizeSettings(value: unknown): PlayFoundSettings {
@@ -64,18 +129,15 @@ function sanitizeSettings(value: unknown): PlayFoundSettings {
   const candidate = value as Partial<PlayFoundSettings>;
 
   return {
-    language: isLanguage(candidate.language)
-      ? candidate.language
-      : defaultSettings.language,
+    language: isLanguage(candidate.language) ? candidate.language : defaultSettings.language,
+    marketLanguage: isMarketLanguage(candidate.marketLanguage)
+      ? candidate.marketLanguage
+      : defaultSettings.marketLanguage,
+    currency: isCurrency(candidate.currency) ? candidate.currency : defaultSettings.currency,
     theme: isTheme(candidate.theme) ? candidate.theme : defaultSettings.theme,
-    compactMode:
-      typeof candidate.compactMode === "boolean"
-        ? candidate.compactMode
-        : defaultSettings.compactMode,
+    compactMode: typeof candidate.compactMode === "boolean" ? candidate.compactMode : defaultSettings.compactMode,
     reduceAnimations:
-      typeof candidate.reduceAnimations === "boolean"
-        ? candidate.reduceAnimations
-        : defaultSettings.reduceAnimations
+      typeof candidate.reduceAnimations === "boolean" ? candidate.reduceAnimations : defaultSettings.reduceAnimations
   };
 }
 
@@ -94,7 +156,7 @@ export function PlayFoundProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const savedSettings = window.localStorage.getItem(settingsKey);
+      const savedSettings = window.localStorage.getItem(settingsKey) ?? window.localStorage.getItem("playfound-settings-v1");
       const savedWishlist = window.localStorage.getItem(wishlistKey);
 
       if (savedSettings) {
@@ -116,6 +178,8 @@ export function PlayFoundProvider({ children }: { children: React.ReactNode }) {
     const root = document.documentElement;
     root.dataset.theme = settings.theme;
     root.dataset.compact = String(settings.compactMode);
+    root.dataset.currency = settings.currency;
+    root.dataset.marketLanguage = settings.marketLanguage;
     root.lang = settings.language;
     root.classList.toggle("reduce-motion", settings.reduceAnimations);
   }, [settings]);
@@ -162,6 +226,24 @@ export function PlayFoundProvider({ children }: { children: React.ReactNode }) {
     return added;
   }, []);
 
+  const formatPrice = useCallback(
+    (priceType: "free" | "paid", seed = 1) => {
+      if (priceType === "free") {
+        return settings.language === "ru" ? "Бесплатно" : "Free";
+      }
+
+      const usd = 4.99 + (seed % 5) * 2.5;
+      const converted = Math.max(1, Math.round(usd * rates[settings.currency]));
+      const suffix = ["PLN", "UAH"].includes(settings.currency) ? ` ${currencySymbols[settings.currency]}` : "";
+      const prefix = ["USD", "EUR", "RUB", "GBP", "CNY", "JPY", "KRW"].includes(settings.currency)
+        ? currencySymbols[settings.currency]
+        : "";
+
+      return `${prefix}${converted}${suffix}`;
+    },
+    [settings.currency, settings.language]
+  );
+
   const value = useMemo<PlayFoundContextValue>(
     () => ({
       settings,
@@ -170,16 +252,13 @@ export function PlayFoundProvider({ children }: { children: React.ReactNode }) {
       wishlistIds,
       wishlistCount: wishlistIds.length,
       isWishlisted,
-      toggleWishlist
+      toggleWishlist,
+      formatPrice
     }),
-    [isWishlisted, settings, setSetting, toggleWishlist, wishlistIds]
+    [formatPrice, isWishlisted, settings, setSetting, toggleWishlist, wishlistIds]
   );
 
-  return (
-    <PlayFoundContext.Provider value={value}>
-      {children}
-    </PlayFoundContext.Provider>
-  );
+  return <PlayFoundContext.Provider value={value}>{children}</PlayFoundContext.Provider>;
 }
 
 export function usePlayFound() {

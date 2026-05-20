@@ -12,7 +12,6 @@ import {
   ShieldCheck,
   UserPlus
 } from "lucide-react";
-import { PricingCards } from "@/components/PricingCards";
 import { useAuth } from "@/lib/auth-context";
 import { usePlayFound } from "@/lib/settings-context";
 
@@ -143,18 +142,26 @@ export function DevelopersPage() {
       <section className="container-shell section-pad">
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
-            <h2 className="text-3xl font-black sm:text-4xl">
-              Разовая монетизация вместо подписок
-            </h2>
+            <h2 className="text-3xl font-black sm:text-4xl">Монетизация без подписок</h2>
             <p className="mt-3 leading-7 muted">
-              На PlayFound нет подписочной модели: игра может быть бесплатной, платной, с донатами, промокодами или разовой покупкой. Тарифы ниже — это mock-пример продвижения, а не подписка.
+              PlayFound не продаёт подписку игрокам. В будущей версии разработчик сможет выбрать бесплатную игру, разовую покупку, донат, промокоды или скидку.
             </p>
           </div>
-          <Link href="/jobs" className="btn btn-secondary">
-            Вакансии
-          </Link>
+          <Link href="/jobs" className="btn btn-secondary">Вакансии</Link>
         </div>
-        <PricingCards />
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {[
+            ["Free", "Бесплатная игра или демо для роста аудитории."],
+            ["One-time purchase", "Разовая покупка без подписки."],
+            ["Donations", "Добровольная поддержка автора."],
+            ["Promo codes", "Ключи и промокоды для тестеров и прессы."]
+          ].map(([title, text]) => (
+            <article className="glass-card rounded-[1.25rem] p-5" key={title}>
+              <h3 className="text-xl font-black">{title}</h3>
+              <p className="mt-3 text-sm leading-6 muted">{text}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="container-shell pb-20">

@@ -266,6 +266,10 @@ function isValidAvatarUrl(value: string) {
     return true;
   }
 
+  if (/^data:image\/(png|jpg|jpeg|webp|gif);base64,/i.test(trimmed)) {
+    return trimmed.length < 1_200_000;
+  }
+
   if (!/^https?:\/\//i.test(trimmed)) {
     return false;
   }

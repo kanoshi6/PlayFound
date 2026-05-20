@@ -66,6 +66,148 @@
   --shadow: 0 24px 80px rgba(23, 69, 38, 0.16);
 }
 
+
+:root[data-theme="streetStyle"] {
+  color-scheme: dark;
+  --bg: #090807;
+  --bg-elevated: #16100c;
+  --panel: rgba(28, 22, 16, 0.86);
+  --panel-strong: rgba(34, 25, 17, 0.96);
+  --panel-soft: rgba(255, 204, 69, 0.10);
+  --text: #fff7df;
+  --muted: #cfbfa6;
+  --muted-strong: #f3ddba;
+  --line: rgba(255, 207, 80, 0.18);
+  --line-strong: rgba(255, 207, 80, 0.34);
+  --accent: #ffcb45;
+  --accent-2: #4cff9f;
+  --accent-contrast: #110d04;
+  --cyan: #53d8ff;
+  --amber: #ff9e44;
+  --danger: #ff6378;
+}
+
+:root[data-theme="pixel90s"] {
+  color-scheme: dark;
+  --bg: #050515;
+  --bg-elevated: #0b1024;
+  --panel: rgba(11, 17, 39, 0.88);
+  --panel-strong: rgba(13, 20, 46, 0.97);
+  --panel-soft: rgba(125, 253, 255, 0.09);
+  --text: #efffff;
+  --muted: #a2bed0;
+  --muted-strong: #c9f5ff;
+  --line: rgba(125, 253, 255, 0.20);
+  --line-strong: rgba(125, 253, 255, 0.40);
+  --accent: #7dfdff;
+  --accent-2: #ff73fa;
+  --accent-contrast: #020516;
+  --cyan: #00ecff;
+  --amber: #ffe66d;
+  --danger: #ff6584;
+}
+
+:root[data-theme="darkNeon"] {
+  color-scheme: dark;
+  --bg: #06020d;
+  --bg-elevated: #0d0718;
+  --panel: rgba(20, 10, 34, 0.86);
+  --panel-strong: rgba(24, 13, 42, 0.96);
+  --panel-soft: rgba(185, 92, 255, 0.10);
+  --text: #fbf4ff;
+  --muted: #baa8c9;
+  --muted-strong: #eadbff;
+  --line: rgba(185, 92, 255, 0.20);
+  --line-strong: rgba(70, 240, 180, 0.34);
+  --accent: #b95cff;
+  --accent-2: #54ffc3;
+  --accent-contrast: #0b0610;
+  --cyan: #50e8ff;
+  --amber: #ffd166;
+  --danger: #ff5b8e;
+}
+
+:root[data-theme="fantasyScroll"] {
+  color-scheme: light;
+  --bg: #efe4ca;
+  --bg-elevated: #e7d4ad;
+  --panel: rgba(255, 247, 222, 0.82);
+  --panel-strong: rgba(255, 247, 222, 0.96);
+  --panel-soft: rgba(117, 77, 31, 0.08);
+  --text: #251708;
+  --muted: #6e5533;
+  --muted-strong: #3e2c15;
+  --line: rgba(83, 55, 18, 0.18);
+  --line-strong: rgba(83, 55, 18, 0.34);
+  --accent: #8f5c22;
+  --accent-2: #2e8b57;
+  --accent-contrast: #fff6d5;
+  --cyan: #367e7f;
+  --amber: #b1792d;
+  --danger: #9d2f45;
+}
+
+
+:root[data-theme="arcadeClub"] {
+  color-scheme: dark;
+  --bg: #07040f;
+  --bg-elevated: #101021;
+  --panel: rgba(17, 18, 39, 0.88);
+  --panel-strong: rgba(20, 22, 48, 0.97);
+  --panel-soft: rgba(255, 225, 79, 0.10);
+  --text: #fffdf2;
+  --muted: #c7c1d5;
+  --muted-strong: #f1e9ff;
+  --line: rgba(255, 225, 79, 0.20);
+  --line-strong: rgba(89, 246, 180, 0.36);
+  --accent: #ffe14f;
+  --accent-2: #59f6b4;
+  --accent-contrast: #101005;
+  --cyan: #4ce5ff;
+  --amber: #ff9f43;
+  --danger: #ff5d87;
+}
+
+:root[data-theme="horrorVhs"] {
+  color-scheme: dark;
+  --bg: #080608;
+  --bg-elevated: #120b0e;
+  --panel: rgba(22, 13, 16, 0.9);
+  --panel-strong: rgba(28, 16, 20, 0.98);
+  --panel-soft: rgba(255, 79, 101, 0.09);
+  --text: #fff1f3;
+  --muted: #c3a3aa;
+  --muted-strong: #ffe0e5;
+  --line: rgba(255, 79, 101, 0.18);
+  --line-strong: rgba(255, 79, 101, 0.38);
+  --accent: #ff4f65;
+  --accent-2: #ffb1bb;
+  --accent-contrast: #140407;
+  --cyan: #77c8c4;
+  --amber: #d99f57;
+  --danger: #ff4f65;
+}
+
+:root[data-theme="softIndie"] {
+  color-scheme: light;
+  --bg: #fff8f4;
+  --bg-elevated: #f9ecf4;
+  --panel: rgba(255, 255, 255, 0.82);
+  --panel-strong: rgba(255, 255, 255, 0.96);
+  --panel-soft: rgba(255, 159, 207, 0.12);
+  --text: #22141d;
+  --muted: #765b68;
+  --muted-strong: #3e2533;
+  --line: rgba(128, 71, 100, 0.16);
+  --line-strong: rgba(82, 190, 149, 0.30);
+  --accent: #55c895;
+  --accent-2: #ff76b7;
+  --accent-contrast: #07140e;
+  --cyan: #64c7d5;
+  --amber: #e3a84f;
+  --danger: #cc4b6a;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -367,4 +509,46 @@ select.input {
 
 .pulse-glow {
   animation: soft-pulse 4s ease-in-out infinite;
+}
+
+
+html[data-theme="pixel90s"] .btn,
+html[data-theme="pixel90s"] .tag,
+html[data-theme="pixel90s"] .eyebrow {
+  border-radius: 0.45rem;
+  text-transform: uppercase;
+}
+
+html[data-theme="streetStyle"] body::before {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255, 203, 69, 0.10), transparent 8rem),
+    linear-gradient(135deg, rgba(255,255,255,0.025) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.025) 50%, rgba(255,255,255,0.025) 75%, transparent 75%);
+  background-size: 100% 100%, 42px 42px;
+}
+
+html[data-theme="horrorVhs"] body::before {
+  background-image:
+    linear-gradient(rgba(255, 79, 101, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 100% 7px, 46px 46px;
+}
+
+.floaty {
+  animation: floaty 7s ease-in-out infinite;
+}
+
+.reveal-card {
+  animation: fade-up 650ms ease both;
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
+}
+
+.player-first-gradient {
+  background:
+    radial-gradient(circle at 20% 15%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 20rem),
+    radial-gradient(circle at 80% 30%, color-mix(in srgb, var(--cyan) 14%, transparent), transparent 18rem),
+    linear-gradient(135deg, color-mix(in srgb, var(--panel-strong) 90%, transparent), color-mix(in srgb, var(--panel-soft) 75%, transparent));
 }
