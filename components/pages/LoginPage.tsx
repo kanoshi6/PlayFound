@@ -88,7 +88,7 @@ export function LoginPage() {
           </button>
 
           <div className="mt-5 grid gap-2 text-center text-sm muted">
-            <p>{t.auth.mockWarning}</p>
+            <p>{t.auth.Warning}</p>
             <p>
               {t.auth.noAccount}{" "}
               <Link href="/register" className="font-black text-[var(--accent-2)]">

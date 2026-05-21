@@ -173,7 +173,7 @@ export function ProfilePage() {
     }
 
     setError(null);
-    setStatus("Профиль обновлён. Ник, описание и аватар прошли mock-модерацию.");
+    setStatus("Профиль обновлён. Ник, описание и аватар прошли модерацию.");
     refreshUsers();
   };
 
@@ -310,7 +310,7 @@ export function ProfilePage() {
                 </span>
                 <h2 className="mt-4 text-3xl font-black">Внешний вид, библиотека и друзья</h2>
                 <p className="mt-3 max-w-3xl leading-7 muted">
-                  Аватар загружается как файл с компьютера, ник и описание проходят простую mock-модерацию, а цвет ника выбирается без лишних цифр в интерфейсе.
+                  Аватар загружается как файл с компьютера, ник и описание проходят простую модерацию, а цвет ника выбирается без лишних цифр в интерфейсе.
                 </p>
               </div>
               <Link href="/catalog" className="btn btn-secondary">
@@ -386,7 +386,7 @@ export function ProfilePage() {
                       <p className="font-black" style={{ color: friend.nicknameColor }}>{friend.displayName}</p>
                       <p className="text-sm muted">{friend.playerId}</p>
                     </div>
-                    <span className="tag">online mock</span>
+                    <span className="tag">друг</span>
                   </div>
                 ))
               ) : (

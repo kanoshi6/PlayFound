@@ -69,8 +69,8 @@ export function ForumPage() {
             ))}
           </div>
           <div className="mt-5 rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4">
-            <p className="inline-flex items-center gap-2 font-black"><Users size={17} /> В полной версии</p>
-            <p className="mt-2 text-sm leading-6 muted">Роли, жалобы, автофильтр мата, скрытие сообщений и логи модерации будут связаны с backend.</p>
+            <p className="inline-flex items-center gap-2 font-black"><Users size={17} /> Модерация форума</p>
+            <p className="mt-2 text-sm leading-6 muted">Роли, жалобы, автофильтр мата, скрытие сообщений и логи модерации собраны в единую систему.</p>
           </div>
         </aside>
       </div>

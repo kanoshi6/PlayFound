@@ -925,3 +925,23 @@ html[data-compact="true"] .game-card-fixed {
     justify-content: center;
   }
 }
+
+/* V6 fixes */
+.search-input {
+  padding-left: 2.75rem !important;
+}
+
+.header-settings-button {
+  min-width: 3rem;
+  min-height: 3rem;
+}
+
+.game-card-fixed {
+  height: 100%;
+}
+
+.game-card-fixed p,
+.game-card-fixed a,
+.game-card-fixed span {
+  min-width: 0;
+}

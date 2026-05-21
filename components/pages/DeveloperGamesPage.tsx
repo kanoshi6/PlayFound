@@ -8,7 +8,7 @@ import {
   getGameSubmissionsByDeveloper,
   type GameSubmission,
   type SubmissionActivity
-} from "@/lib/prototype-storage";
+} from "@/lib/platform-storage";
 import { useAuth } from "@/lib/auth-context";
 import { usePlayFound } from "@/lib/settings-context";
 

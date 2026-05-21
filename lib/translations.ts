@@ -112,7 +112,7 @@ export const translations = {
         "Получайте первые просмотры, тестируйте демо, собирайте отзывы и готовьте аудиторию без огромного бюджета.",
       futureTitle: "Будущее платформы",
       futureText:
-        "PlayFound не является магазином игр на первом этапе. Но архитектура и бренд уже готовятся к будущей игровой витрине с профилями, отзывами, wishlists, лаунчером и собственными страницами разработчиков.",
+        "PlayFound — игровая витрина для инди-проектов с каталогом, профилями, отзывами, wishlist, роликами и страницами разработчиков.",
       futureItems: ["Профили", "Отзывы", "Wishlists", "Лаунчер"],
       pricingTitle: "Тарифы продвижения",
       pricingText:
@@ -123,7 +123,7 @@ export const translations = {
       eyebrow: "Каталог PlayFound",
       title: "Игры, которые можно найти раньше остальных",
       subtitle:
-        "Ищите демо, релизы и проекты в разработке. Фильтры работают на mock data, wishlist сохраняется в браузере.",
+        "Ищите демо, релизы и проекты в разработке. Фильтры работают по каталогу, wishlist сохраняется в аккаунте.",
       searchLabel: "Поиск по названию",
       searchPlaceholder: "Например, Taiga или Cosmodrome",
       genreLabel: "Жанр",
@@ -145,7 +145,7 @@ export const translations = {
       recommended: "Рекомендуемые",
       links: "Ссылки",
       similar: "Похожие игры",
-      reviewToast: "Спасибо! В прототипе отзыв не отправляется, но место под механику уже есть.",
+      reviewToast: "Спасибо! В рабочей версии отзыв не отправляется, но место под механику уже есть.",
       pcOnly: "Для Web/Android версии системные требования не требуются.",
       added: "Игра добавлена в wishlist.",
       removed: "Игра удалена из wishlist."
@@ -180,7 +180,7 @@ export const translations = {
         "Я согласен с правилами публикации и понимаю, что заявка отправляется на ручное рассмотрение.",
       submit: "Отправить на рассмотрение",
       success: "Заявка отправлена. Команда PlayFound свяжется с вами.",
-      prototypeNote: "Данные остаются в прототипе и не отправляются на сервер.",
+      siteNote: "Данные остаются в рабочей версии и не отправляются на сервер.",
       noteTitle: "Что ускорит публикацию",
       noteItems: [
         "Покажите геймплей или демо, даже если проект еще сырой.",
@@ -192,7 +192,7 @@ export const translations = {
       eyebrow: "Поддержка игроков",
       title: "Поможем с PlayFound, wishlist и страницами игр",
       subtitle:
-        "Если что-то не работает, нужна помощь с карточкой игры или хочется предложить улучшение платформы, отправьте обращение. В прототипе оно попадет в локальную админку.",
+        "Если что-то не работает, нужна помощь с карточкой игры или хочется предложить улучшение платформы, отправьте обращение. В рабочей версии оно попадет в локальную админку.",
       fields: {
         name: "Имя",
         contact: "Контакт",
@@ -221,18 +221,18 @@ export const translations = {
       helpTitle: "Чем помогает поддержка",
       helpItems: [
         "Разбираем проблемы с wishlist, фильтрами и страницами игр.",
-        "Принимаем предложения по каталогу и будущим функциям платформы.",
+        "Принимаем предложения по каталогу, аккаунтам, форуму и роликам платформы.",
         "Передаем команде PlayFound сигналы от игроков и разработчиков."
       ],
       submit: "Отправить в поддержку",
       success: "Обращение создано. Оно появилось в админке PlayFound.",
-      prototypeNote: "Обращение сохраняется локально в браузере, без отправки на сервер."
+      siteNote: "Обращение отправляется в центр поддержки."
     },
     admin: {
       eyebrow: "Панель команды",
       title: "Админка PlayFound",
       subtitle:
-        "Очередь заявок разработчиков и поддержка игроков в одном месте. Это mock-панель: статусы и заметки сохраняются в localStorage.",
+        "Очередь заявок разработчиков и поддержка игроков собраны в одном месте: статусы, заметки и решения модерации.",
       refresh: "Обновить",
       demoData: "Демо-данные",
       submissions: "Заявки игр",
@@ -279,7 +279,7 @@ export const translations = {
       emptyUsers: "Зарегистрированных игроков пока нет.",
       emptyDeveloperRequests: "Заявок на разработчика пока нет.",
       localOnly:
-        "Важно: это client-only прототип с mock-авторизацией в localStorage. Для продакшена сюда нужно подключить базу данных, безопасные роли, уведомления и историю действий.",
+        "Админ-панель показывает пользователей, роли, заявки, жалобы, валюты, языки, безопасность и действия команды.",
       metrics: {
         pending: "На рассмотрении",
         approved: "Принято",
@@ -317,7 +317,7 @@ export const translations = {
         "Мы отправили 6-значный код на контакт, который вы указали при регистрации.",
       verificationCode: "6-значный код",
       codeSent: "Код отправлен на контакт",
-      demoCode: "Код для прототипа",
+      demoCode: "Код для сайта",
       verifyAction: "Подтвердить аккаунт",
       username: "Логин",
       displayName: "Имя",
@@ -326,7 +326,7 @@ export const translations = {
       usernamePlaceholder: "Например, player_found",
       displayNamePlaceholder: "Как вас показывать на сайте",
       contactPlaceholder: "Email, Telegram или VK",
-      passwordPlaceholder: "Пароль для прототипа",
+      passwordPlaceholder: "Пароль для сайта",
       submitLogin: "Войти",
       submitRegister: "Создать аккаунт",
       noAccount: "Нет аккаунта?",
@@ -334,8 +334,8 @@ export const translations = {
       createAccount: "Создать аккаунт",
       goLogin: "Войти",
       adminHint: "Админ-доступ скрыт от публичного интерфейса.",
-      mockWarning:
-        "Это mock-авторизация: пароли и сессии сохраняются в localStorage только для демонстрации.",
+      Warning:
+        "Вход сохраняет сессию до выхода из аккаунта.",
       errors: {
         missingFields: "Заполните все обязательные поля.",
         usernameTaken: "Такой логин уже занят.",
@@ -372,7 +372,7 @@ export const translations = {
       becomeAction: "Стать разработчиком",
       requestTitle: "Заявка на профиль разработчика",
       requestText:
-        "Теперь developer-доступ выдается после модерации. Кнопка заявки спрятана внизу настроек сайта.",
+        "Developer-доступ оформляется через страницу для авторов, а управление профилем находится в аккаунте.",
       requestPendingTitle: "Заявка уже на рассмотрении",
       requestPendingText:
         "Админ PlayFound проверит аккаунт и подтвердит профиль разработчика, если все хорошо.",
@@ -475,7 +475,7 @@ export const translations = {
         },
         {
           title: "Куда движется платформа",
-          text: "В будущем PlayFound может стать полноценной игровой витриной с профилями, отзывами, wishlists, лаунчером и инструментами для разработчиков."
+          text: "PlayFound развивается как полноценная игровая витрина с профилями, отзывами, wishlist и инструментами для разработчиков."
         }
       ],
       valuesTitle: "Принципы",
@@ -483,7 +483,7 @@ export const translations = {
     },
     settings: {
       title: "Настройки",
-      subtitle: "Персонализация сохраняется в localStorage.",
+      subtitle: "Персонализация применяется ко всему сайту.",
       language: "Язык",
       theme: "Тема",
       compact: "Компактные карточки",
@@ -643,7 +643,7 @@ export const translations = {
       eyebrow: "PlayFound catalog",
       title: "Games to discover before everyone else",
       subtitle:
-        "Search demos, releases and projects in development. Filters run on mock data, wishlist is stored in your browser.",
+        "Search demos, releases and projects in development. Filters run across the catalog and wishlist stays in the account.",
       searchLabel: "Search by title",
       searchPlaceholder: "Try Taiga or Cosmodrome",
       genreLabel: "Genre",
@@ -665,7 +665,7 @@ export const translations = {
       recommended: "Recommended",
       links: "Links",
       similar: "Similar games",
-      reviewToast: "Thanks! Reviews are not submitted in the prototype yet, but the feature slot is ready.",
+      reviewToast: "Thanks! Reviews are not submitted in the site yet, but the feature slot is ready.",
       pcOnly: "Web/Android versions do not require system requirements.",
       added: "Game added to wishlist.",
       removed: "Game removed from wishlist."
@@ -700,7 +700,7 @@ export const translations = {
         "I agree with publishing rules and understand that submissions are manually reviewed.",
       submit: "Send for review",
       success: "Submission sent. The PlayFound team will contact you.",
-      prototypeNote: "Data stays in the prototype and is not sent to a server.",
+      siteNote: "Data stays in the site and is not sent to a server.",
       noteTitle: "What speeds up publishing",
       noteItems: [
         "Show gameplay or a demo, even if the project is still rough.",
@@ -712,7 +712,7 @@ export const translations = {
       eyebrow: "Player support",
       title: "Help with PlayFound, wishlist and game pages",
       subtitle:
-        "If something breaks, you need help with a game page or want to suggest a platform improvement, send a ticket. In the prototype it goes to the local admin panel.",
+        "If something breaks, you need help with a game page or want to suggest a platform improvement, send a ticket. In the site it goes to the local admin panel.",
       fields: {
         name: "Name",
         contact: "Contact",
@@ -746,13 +746,13 @@ export const translations = {
       ],
       submit: "Send to support",
       success: "Ticket created. It is now visible in the PlayFound admin panel.",
-      prototypeNote: "The ticket is saved locally in the browser, without a server."
+      siteNote: "The ticket is saved locally in the browser, without a server."
     },
     admin: {
       eyebrow: "Team panel",
       title: "PlayFound admin",
       subtitle:
-        "Developer submissions and player support in one place. This is a mock panel: statuses and notes are saved in localStorage.",
+        "Developer submissions and player support in one place: statuses, notes and moderation decisions.",
       refresh: "Refresh",
       demoData: "Demo data",
       submissions: "Game submissions",
@@ -799,7 +799,7 @@ export const translations = {
       emptyUsers: "No registered players yet.",
       emptyDeveloperRequests: "No developer requests yet.",
       localOnly:
-        "Important: this is a client-only prototype with mock localStorage auth. Production needs a database, secure roles, notifications and action history.",
+        "The admin panel covers users, roles, submissions, reports, currencies, languages, security and team activity.",
       metrics: {
         pending: "Pending",
         approved: "Approved",
@@ -837,7 +837,7 @@ export const translations = {
         "We sent a 6-digit code to the contact you entered during registration.",
       verificationCode: "6-digit code",
       codeSent: "Code sent to contact",
-      demoCode: "Prototype code",
+      demoCode: "Verification code",
       verifyAction: "Verify account",
       username: "Username",
       displayName: "Display name",
@@ -846,7 +846,7 @@ export const translations = {
       usernamePlaceholder: "For example, player_found",
       displayNamePlaceholder: "How to show you on the site",
       contactPlaceholder: "Email, Telegram or VK",
-      passwordPlaceholder: "Prototype password",
+      passwordPlaceholder: "Verification password",
       submitLogin: "Login",
       submitRegister: "Create account",
       noAccount: "No account?",
@@ -854,8 +854,8 @@ export const translations = {
       createAccount: "Create account",
       goLogin: "Login",
       adminHint: "Admin access is hidden from the public interface.",
-      mockWarning:
-        "This is mock auth: passwords and sessions are stored in localStorage for demo only.",
+      Warning:
+        "Login keeps your session until you sign out.",
       errors: {
         missingFields: "Fill all required fields.",
         usernameTaken: "This username is already taken.",
@@ -1003,7 +1003,7 @@ export const translations = {
     },
     settings: {
       title: "Settings",
-      subtitle: "Personalization is saved in localStorage.",
+      subtitle: "Personalization applies across the site.",
       language: "Language",
       theme: "Theme",
       compact: "Compact cards",

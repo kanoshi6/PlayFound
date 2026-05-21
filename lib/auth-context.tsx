@@ -679,7 +679,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       displayName: profile.displayName,
       contact: getUsers().find((user) => user.id === session.userId)?.contact ?? "",
       status: "approved",
-      adminNote: "Создано автоматически в mock-прототипе.",
+      adminNote: "Создано автоматически в рабочей версии.",
       createdAt: now,
       updatedAt: now
     };

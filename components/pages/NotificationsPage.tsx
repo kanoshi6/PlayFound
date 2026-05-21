@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Bell, CheckCircle2, MessageCircle, ShieldAlert, Star } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
-const mockNotifications = [
+const Notifications = [
   { icon: CheckCircle2, title: "Статус заявки изменён", text: "Игра прошла предварительную проверку и ожидает финального решения." },
   { icon: MessageCircle, title: "Новый ответ на форуме", text: "В теме про оформление страницы игры появился новый комментарий." },
   { icon: Star, title: "Игра из избранного обновилась", text: "Разработчик добавил новый ролик и devlog." },
@@ -50,7 +50,7 @@ export function NotificationsPage() {
       </div>
 
       <div className="mt-10 grid gap-4">
-        {mockNotifications.map((notification) => (
+        {Notifications.map((notification) => (
           <article className="surface flex gap-4 rounded-[1.5rem] p-5" key={notification.title}>
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] text-[var(--accent-2)]">
               <notification.icon size={22} />

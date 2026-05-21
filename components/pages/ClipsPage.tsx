@@ -104,7 +104,7 @@ export function ClipsPage() {
     if (!session && !requireLogin(clip.id)) return;
     const text = comments[clip.id] ?? "";
     if (hasBadWords(text)) {
-      setClipError(clip.id, "Комментарий не прошёл mock-модерацию: убери мат или оскорбления.");
+      setClipError(clip.id, "Комментарий не прошёл модерацию: убери мат или оскорбления.");
       return;
     }
     if (session) {

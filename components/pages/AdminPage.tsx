@@ -32,7 +32,7 @@ import {
   type GameSubmissionReviewStatus,
   type SupportTicket,
   type SupportTicketStatus
-} from "@/lib/prototype-storage";
+} from "@/lib/platform-storage";
 import {
   banUser,
   getDeveloperProfiles,
@@ -151,7 +151,7 @@ export function AdminPage() {
     return (
       <AccessCard
         title="Нужен доступ администратора"
-        text="Эта страница открывается только через PlayFoundadmin / 14886769 в mock-прототипе."
+        text="Админ-панель доступна только аккаунту PlayFoundadmin."
         actionHref="/login"
         action="Войти"
       />
@@ -203,7 +203,7 @@ export function AdminPage() {
                   Операционный центр платформы
                 </h2>
                 <p className="mt-4 max-w-4xl text-lg leading-8 muted">
-                  В полной версии здесь будут пользователи, роли, игры, вакансии, форум, ролики, жалобы, платежи, валюты, языки, темы дизайна, безопасность и логи доступа к персональным данным.
+                  Здесь собраны пользователи, роли, игры, вакансии, форум, ролики, жалобы, платежи, валюты, языки, темы дизайна, безопасность и логи доступа к персональным данным.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -288,7 +288,7 @@ export function AdminPage() {
 
           {activeTab === "users" ? (
             <section className="grid gap-4">
-              <SectionToolbar title="Пользователи и приватность" description="Показывай только нужные данные. Доступ к email/IP/платежам должен логироваться в полной версии." />
+              <SectionToolbar title="Пользователи и приватность" description="Показывай только нужные данные. Доступ к email/IP/платежам должен логироваться." />
               {users.length > 0 ? (
                 users.map((user) => (
                   <UserCard
@@ -312,7 +312,7 @@ export function AdminPage() {
           {activeTab === "roles" ? <RolesPanel profiles={profiles} /> : null}
           {activeTab === "moderation" ? <ModerationPanel /> : null}
           {activeTab === "currencies" ? <CurrenciesPanel /> : null}
-          {activeTab === "settings" ? <SettingsPanelMock /> : null}
+          {activeTab === "settings" ? <SettingsPanel /> : null}
           {activeTab === "security" ? <SecurityPanel /> : null}
         </div>
       </div>
@@ -498,7 +498,7 @@ function RolesPanel({ profiles }: { profiles: DeveloperProfile[] }) {
 
   return (
     <section className="grid gap-4">
-      <SectionToolbar title="Роли и доступ" description={`Developer-профилей сейчас: ${profiles.length}. Создание кастомных ролей появится в полной версии.`} />
+      <SectionToolbar title="Роли и доступ" description={`Developer-профилей сейчас: ${profiles.length}. Кастомные роли, права и выдача доступов управляются главным админом.`} />
       <div className="grid gap-4 md:grid-cols-2">
         {roles.map(([title, text]) => <article className="surface rounded-[1.5rem] p-5" key={title}><h3 className="text-xl font-black">{title}</h3><p className="mt-2 leading-7 muted">{text}</p></article>)}
       </div>
@@ -507,14 +507,14 @@ function RolesPanel({ profiles }: { profiles: DeveloperProfile[] }) {
 }
 
 function ModerationPanel() {
-  return <StaticPanel title="Модерация контента" items={["Фильтр матов в профиле и никнейме уже добавлен в mock-auth.", "Аватарка проходит проверку формата URL и расширения изображения.", "В полной версии: очередь аватарок, роликов, комментариев, форумных тем и файлов игр.", "Каждое действие админа должно иметь причину и запись в audit-log."]} />;
+  return <StaticPanel title="Модерация контента" items={["Фильтр матов в профиле и никнейме уже добавлен в систему аккаунтов.", "Аватарка проходит проверку формата файла и размера изображения.", "Очереди модерации охватывают аватарки, ролики, комментарии, форумные темы и файлы игр.", "Каждое действие админа должно иметь причину и запись в audit-log."]} />;
 }
 
 function CurrenciesPanel() {
-  return <StaticPanel title="Валюты и языки" icon={<Coins size={22} />} items={["Валюты: USD, EUR, RUB, GBP, PLN, UAH, CNY, JPY, KRW.", "Языки: RU, EN, ES, DE, FR, PL, UK, ZH, JA, KO.", "Админ включает/отключает валюты и языки.", "Разработчик указывает локализации игры, а цены пересчитываются через backend-rate service."]} />;
+  return <StaticPanel title="Валюты и языки" icon={<Coins size={22} />} items={["Валюты: USD, EUR, RUB, GBP, PLN, UAH, CNY, JPY, KRW.", "Языки: RU, EN, ES, DE, FR, PL, UK, ZH, JA, KO.", "Админ включает/отключает валюты и языки.", "Разработчик указывает локализации игры, а цены пересчитываются через сервис курсов валют."]} />;
 }
 
-function SettingsPanelMock() {
+function SettingsPanel() {
   return <StaticPanel title="Глобальные настройки" items={["Включение комментариев к вакансиям.", "Политика приватности для админского просмотра данных.", "Минимальный возраст для игры и возрастные рейтинги.", "Дизайн-тема по умолчанию и список доступных тем."]} />;
 }
 

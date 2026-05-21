@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Gamepad2, ShieldCheck } from "lucide-react";
+import { Gamepad2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
 export function Footer() {
@@ -10,17 +10,22 @@ export function Footer() {
   const playerLinks = [
     { href: "/catalog", label: "Каталог" },
     { href: "/clips", label: "Ролики" },
+    { href: "/wishlist", label: "Wishlist" },
+    { href: "/cart", label: "Корзина" },
     { href: "/forum", label: "Форум" },
-    { href: "/notifications", label: "Уведомления" },
     { href: "/profile", label: "Профиль" }
   ];
 
   const serviceLinks = [
     { href: "/support", label: "Поддержка" },
     { href: "/about", label: "О проекте" },
-    { href: "/developers", label: session?.activeRole === "player" ? "Стать разработчиком" : "Для разработчиков" },
+    { href: "/developers", label: "Для авторов" },
     ...(session?.activeRole === "developer"
-      ? [{ href: "/developer/games", label: "Мои игры" }, { href: "/submit", label: "Добавить игру" }, { href: "/jobs", label: "Вакансии" }]
+      ? [
+          { href: "/developer/games", label: "Мои игры" },
+          { href: "/submit", label: "Добавить игру" },
+          { href: "/jobs", label: "Вакансии" }
+        ]
       : []),
     ...(session?.activeRole === "admin" ? [{ href: "/admin", label: "Админка" }] : [])
   ];
@@ -35,14 +40,14 @@ export function Footer() {
             </span>
             <span>
               <span className="block text-xl font-black">PlayFound</span>
-              <span className="block text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">Инди-игры для игроков</span>
+              <span className="block text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">Инди-игры, демо и релизы</span>
             </span>
           </div>
           <p className="mt-4 max-w-md leading-7 muted">
-            PlayFound помогает находить новые инди-игры через каталог, ролики, wishlist, корзину, форум, друзей и библиотеку.
+            PlayFound помогает искать игры, смотреть короткие ролики, сохранять проекты в wishlist, собирать корзину, обсуждать релизы и находить друзей по ID.
           </p>
           <p className="mt-4 max-w-md text-sm leading-6 muted">
-            Модель платформы: бесплатные игры, разовые покупки, донаты, промокоды и будущая комиссия с продаж после подключения backend.
+            На платформе нет подписочной модели: только бесплатные игры, разовые покупки, донаты, промокоды и скидки.
           </p>
         </div>
 
@@ -66,20 +71,14 @@ export function Footer() {
               </Link>
             ))}
           </div>
-          {session?.activeRole === "player" ? (
-            <Link href="/developers" className="btn btn-secondary mt-5 w-fit">
-              <ShieldCheck size={17} />
-              Стать разработчиком
-            </Link>
-          ) : null}
         </div>
 
         <div>
           <h3 className="font-black">Контакты и соцсети</h3>
           <div className="mt-4 grid gap-3 text-sm font-semibold text-[var(--muted)]">
-            <a href="mailto:hello@playfound.local" className="hover:text-[var(--accent-2)]">hello@playfound.local</a>
-            <span>press@playfound.local</span>
-            <span>partners@playfound.local</span>
+            <a href="mailto:hello@playfound.ru" className="hover:text-[var(--accent-2)]">hello@playfound.ru</a>
+            <span>press@playfound.ru</span>
+            <span>partners@playfound.ru</span>
           </div>
           <div className="mt-5 flex flex-wrap gap-2">
             {["Telegram", "VK", "YouTube", "Discord"].map((social) => (

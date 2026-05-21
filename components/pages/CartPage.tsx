@@ -17,7 +17,7 @@ export function CartPage() {
         <div>
           <span className="eyebrow"><ShoppingCart size={15} /> Корзина</span>
           <h1 className="mt-5 text-4xl font-black tracking-normal sm:text-6xl">Покупки PlayFound</h1>
-          <p className="mt-4 max-w-3xl text-lg leading-8 muted">Mock-корзина для платных игр. Сейчас без оплаты: она показывает, как будет выглядеть покупка после подключения backend и платёжного провайдера.</p>
+          <p className="mt-4 max-w-3xl text-lg leading-8 muted">Корзина для платных игр: проверь выбранные проекты, скидки и итоговую сумму перед оформлением заказа.</p>
         </div>
         <Link href="/catalog" className="btn btn-secondary">Продолжить выбирать</Link>
       </div>
@@ -49,10 +49,10 @@ export function CartPage() {
             <h2 className="text-2xl font-black">Итого</h2>
             <div className="mt-5 grid gap-3 border-y border-[var(--line)] py-5">
               <div className="flex justify-between gap-3"><span className="muted">Игры</span><strong>{cartGames.length}</strong></div>
-              <div className="flex justify-between gap-3"><span className="muted">Скидки</span><strong className="text-[var(--accent-2)]">mock</strong></div>
+              <div className="flex justify-between gap-3"><span className="muted">Скидки</span><strong className="text-[var(--accent-2)]">учтены в цене</strong></div>
               <div className="flex justify-between gap-3 text-2xl"><span className="font-black">Сумма</span><strong>{currencySymbol}{total}</strong></div>
             </div>
-            <button type="button" className="btn btn-primary mt-5 w-full"><CreditCard size={18} /> Оформить mock-заказ</button>
+            <button type="button" className="btn btn-primary mt-5 w-full"><CreditCard size={18} /> Оформить заказ</button>
             <button type="button" className="btn btn-ghost mt-3 w-full" onClick={clearCart}>Очистить корзину</button>
           </aside>
         </div>

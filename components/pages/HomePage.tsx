@@ -99,7 +99,7 @@ export function HomePage() {
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            {["Бесплатные демо", "Разовые покупки", "Промокоды", "Донаты авторам", "Скидки", "Продажи через backend"].map((item) => (
+            {["Бесплатные демо", "Разовые покупки", "Промокоды", "Донаты авторам", "Скидки", "Продажи через корзину"].map((item) => (
               <article className="glass-card rounded-[1.25rem] p-5" key={item}>
                 <p className="text-xl font-black">{item}</p>
                 <p className="mt-2 text-sm leading-6 muted">Механика описана в концепции и готова для дальнейшей реализации.</p>

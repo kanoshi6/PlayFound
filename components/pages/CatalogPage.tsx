@@ -57,8 +57,8 @@ export function CatalogPage() {
 
         const matchesTag = tag === "all" || localizedTags.includes(tag);
         const matchesSale = !saleOnly || game.priceType === "paid";
-        const mockMultiplayer = Number(game.id.replace(/\D/g, "")) % 3 === 0;
-        const matchesMultiplayer = multiplayer === "all" || (multiplayer === "multi" ? mockMultiplayer : !mockMultiplayer);
+        const multiplayerFlag = Number(game.id.replace(/\D/g, "")) % 3 === 0;
+        const matchesMultiplayer = multiplayer === "all" || (multiplayer === "multi" ? multiplayerFlag : !multiplayerFlag);
 
         return (
           matchesQuery &&
@@ -99,9 +99,9 @@ export function CatalogPage() {
       <div className="mb-8 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
         <div>
           <span className="eyebrow"><SlidersHorizontal size={15} /> Каталог PlayFound</span>
-          <h1 className="mt-5 text-4xl font-black tracking-normal sm:text-6xl">Магазинные витрины для инди-игр</h1>
+          <h1 className="mt-5 text-4xl font-black tracking-normal sm:text-6xl">Каталог инди-игр</h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 muted">
-            Большие баннеры, полки с подборками, ровные карточки, wishlist, корзина и фильтры. Вдохновлено удобством игровых магазинов, но визуальный стиль PlayFound остаётся оригинальным.
+            Большие баннеры, подборки, ровные карточки, wishlist, корзина и фильтры для быстрого поиска новых проектов.
           </p>
         </div>
         <div className="rounded-[1.5rem] border border-[var(--line)] bg-[var(--panel-soft)] p-4 text-sm leading-6 muted lg:max-w-sm">
@@ -142,7 +142,7 @@ export function CatalogPage() {
             <span className="text-sm font-black">Поиск</span>
             <span className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" size={18} />
-              <input className="input pl-10" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ферма, хоррор, демо, пиксель" />
+              <input className="input search-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ферма, хоррор, демо, пиксель" />
             </span>
           </label>
           <SelectField label="Жанр" value={genre} onChange={(value) => setGenre(value as Genre | "all")} options={[{ value: "all", label: "Все" }, ...genres.map((item) => ({ value: item, label: t.genres[item] }))]} />

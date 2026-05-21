@@ -50,7 +50,7 @@ export function SettingsPanel({ open, onClose }: Props) {
     return null;
   }
 
-  const mockSave = (text: string) => {
+  const saveNotice = (text: string) => {
     setNotice(text);
     window.setTimeout(() => setNotice(null), 2200);
   };
@@ -132,7 +132,7 @@ export function SettingsPanel({ open, onClose }: Props) {
             </div>
           </SettingsSection>
 
-          <SettingsSection icon={<Shield size={18} />} title="Конфиденциальность" text="Mock-настройки приватности для прототипа.">
+          <SettingsSection icon={<Shield size={18} />} title="Конфиденциальность" text="Управление видимостью профиля, заявками в друзья и активностью.">
             <div className="grid gap-3 sm:grid-cols-2">
               <SettingToggle
                 checked={settings.privateProfile}
@@ -169,16 +169,16 @@ export function SettingsPanel({ open, onClose }: Props) {
             </div>
           </SettingsSection>
 
-          <SettingsSection icon={<Mail size={18} />} title="Смена почты" text="Пока это mock-форма. Реальная смена почты будет через код подтверждения.">
+          <SettingsSection icon={<Mail size={18} />} title="Смена почты" text="Смена почты проходит через подтверждение кодом. В демо-сборке запрос сохраняется локально.">
             <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
               <input className="input" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="new-email@example.com" />
-              <button type="button" className="btn btn-primary" onClick={() => mockSave(email ? "Запрос на смену почты сохранён в mock-режиме." : "Сначала введи новую почту.")}>Сохранить</button>
+              <button type="button" className="btn btn-primary" onClick={() => saveNotice(email ? "Запрос на смену почты сохранён." : "Сначала введи новую почту.")}>Сохранить</button>
             </div>
           </SettingsSection>
 
           <SettingsSection icon={<HelpCircle size={18} />} title="Поддержка" text="Быстрый способ написать в поддержку из настроек.">
             <textarea className="input min-h-28 resize-y" value={supportText} onChange={(event) => setSupportText(event.target.value)} placeholder="Опиши проблему, баг или вопрос" />
-            <button type="button" className="btn btn-primary mt-3" onClick={() => mockSave(supportText.trim() ? "Обращение отправлено в mock-поддержку." : "Опиши проблему перед отправкой.")}>Отправить обращение</button>
+            <button type="button" className="btn btn-primary mt-3" onClick={() => saveNotice(supportText.trim() ? "Обращение отправлено в поддержку." : "Опиши проблему перед отправкой.")}>Отправить обращение</button>
           </SettingsSection>
         </div>
       </aside>

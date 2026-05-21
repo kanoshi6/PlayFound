@@ -6,7 +6,7 @@ import {
   createSupportTicket,
   type SupportTicketCategory,
   type SupportTicketPriority
-} from "@/lib/prototype-storage";
+} from "@/lib/platform-storage";
 import { usePlayFound } from "@/lib/settings-context";
 
 const categories: SupportTicketCategory[] = [
@@ -134,7 +134,7 @@ export function SupportPage() {
             <Send size={18} />
             {t.support.submit}
           </button>
-          <p className="mt-3 text-center text-xs muted">{t.support.prototypeNote}</p>
+          <p className="mt-3 text-center text-xs muted">{t.support.siteNote}</p>
         </form>
       </div>
     </section>

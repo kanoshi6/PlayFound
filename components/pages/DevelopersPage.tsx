@@ -41,7 +41,7 @@ export function DevelopersPage() {
               Публикуй игры, ролики, вакансии и собирай аудиторию
             </h1>
             <p className="mt-5 text-lg leading-8 muted">
-              Разработчик в PlayFound получает отдельный профиль, страницу заявок, доступ к отправке игр на модерацию, mock-статистику, вакансии и будущие инструменты продаж.
+              Разработчик в PlayFound получает отдельный профиль, страницу заявок, доступ к отправке игр на модерацию, статистику, вакансии, ролики и инструменты продаж.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               {loaded && !session ? (
@@ -81,7 +81,7 @@ export function DevelopersPage() {
             {[
               "Страница игры с трейлером, скриншотами и devlog",
               "Заявки на модерацию игры, обновления и вакансии",
-              "Mock-аналитика: просмотры, wishlist, интерес аудитории",
+              "Аналитика: просмотры, wishlist, интерес аудитории",
               "Ролики shorts для тизеров и геймплейных моментов",
               "Вакансии для поиска художников, программистов и тестеров",
               "Комментарии, жалобы и обратная связь игроков"
@@ -144,7 +144,7 @@ export function DevelopersPage() {
           <div>
             <h2 className="text-3xl font-black sm:text-4xl">Монетизация магазина</h2>
             <p className="mt-3 leading-7 muted">
-              В будущей версии разработчик сможет выбрать бесплатную игру, разовую покупку, донат, промокоды или скидку.
+              Разработчик выбирает модель проекта: бесплатная игра, разовая покупка, донат, промокоды или скидка.
             </p>
           </div>
           <Link href="/jobs" className="btn btn-secondary">Вакансии</Link>
@@ -224,7 +224,7 @@ function DeveloperAccountCard({
         <span className="tag">{displayName}</span>
         <h2 className="mt-4 text-2xl font-black">Профиль разработчика активен</h2>
         <p className="mt-3 leading-7 muted">
-          Теперь тебе доступны “Мои игры”, добавление игры, будущие вакансии, ролики и статистика.
+          Теперь тебе доступны “Мои игры”, добавление игры, вакансии, ролики и статистика.
         </p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Link href="/developer/games" className="btn btn-secondary">
@@ -245,7 +245,7 @@ function DeveloperAccountCard({
       <span className="tag">{displayName}</span>
       <h2 className="mt-4 text-2xl font-black">Стать разработчиком</h2>
       <p className="mt-3 leading-7 muted">
-        Нажми кнопку — в mock-прототипе профиль разработчика создастся сразу и будет называться “{displayName} Разраб”.
+        Нажми кнопку — PlayFound создаст связанный профиль разработчика “{displayName} Разраб”.
       </p>
       <button type="button" className="btn btn-primary mt-6" onClick={onBecome}>
         <ShieldCheck size={18} />

@@ -1,0 +1,10 @@
+{
+  "name": "PlayFound",
+  "short_name": "PlayFound",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "theme_color": "#07130c",
+  "background_color": "#050906",
+  "display": "standalone"
+}

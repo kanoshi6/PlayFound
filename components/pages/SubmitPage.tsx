@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CheckCircle2, Send } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { createGameSubmission } from "@/lib/prototype-storage";
+import { createGameSubmission } from "@/lib/platform-storage";
 import { usePlayFound } from "@/lib/settings-context";
 
 export function SubmitPage() {
@@ -197,7 +197,7 @@ export function SubmitPage() {
             {t.submit.submit}
           </button>
           <p className="mt-3 text-center text-xs muted">
-            {t.submit.prototypeNote}
+            {t.submit.siteNote}
           </p>
         </form>
       </div>

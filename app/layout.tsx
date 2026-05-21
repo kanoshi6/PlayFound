@@ -7,15 +7,24 @@ import { PageTransition } from "@/components/PageTransition";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "PlayFound - indie game discovery platform",
+  title: "PlayFound — инди-игры, демо и релизы",
   description:
-    "PlayFound helps Russian-speaking indie developers find first players, feedback, wishlists and attention."
+    "PlayFound — игровая платформа для поиска, сохранения, обсуждения и покупки инди-игр.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" }
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/favicon.svg"
+  },
+  manifest: "/site.webmanifest"
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#07100b"
+  themeColor: "#07130c"
 };
 
 export default function RootLayout({

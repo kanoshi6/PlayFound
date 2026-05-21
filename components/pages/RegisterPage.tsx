@@ -19,16 +19,41 @@ type PendingVerification = {
   username: string;
   contact: string;
   code: string;
+  emailSent: boolean;
+  deliveryError?: string;
 };
+
+async function sendVerificationEmail(contact: string, code: string) {
+  try {
+    const response = await fetch("/api/auth/send-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contact, code })
+    });
+
+    const payload = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+
+    if (!response.ok || !payload?.ok) {
+      return { ok: false, error: payload?.error ?? "Не удалось отправить письмо." };
+    }
+
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : "Не удалось отправить письмо." };
+  }
+}
 
 export function RegisterPage() {
   const { register, verifyAccount } = useAuth();
   const router = useRouter();
   const [error, setError] = useState<AuthError | null>(null);
   const [pendingVerification, setPendingVerification] = useState<PendingVerification | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setSubmitting(true);
+
     const formData = new FormData(event.currentTarget);
     const result = register({
       username: String(formData.get("username") ?? ""),
@@ -38,15 +63,21 @@ export function RegisterPage() {
     });
 
     if (!result.ok) {
+      setSubmitting(false);
       setError(result.error);
       return;
     }
 
+    const delivery = await sendVerificationEmail(result.user.contact, result.code);
+
+    setSubmitting(false);
     setError(null);
     setPendingVerification({
       username: result.user.username,
       contact: result.user.contact,
-      code: result.code
+      code: result.code,
+      emailSent: delivery.ok,
+      deliveryError: delivery.ok ? undefined : delivery.error
     });
   };
 
@@ -84,16 +115,26 @@ export function RegisterPage() {
               Подтверди аккаунт
             </h1>
             <p className="mt-5 text-lg leading-8 muted">
-              В продакшене код придёт письмом. В mock-версии код показан на экране, чтобы можно было проверить регистрацию без backend.
+              Мы отправили код подтверждения на email. Если письмо не пришло, проверь папку “Спам” и настройки отправителя в Render.
             </p>
           </div>
 
           <form className="surface rounded-[1.5rem] p-5 sm:p-6" onSubmit={onVerify}>
             <div className="rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4">
-              <p className="text-sm font-black text-[var(--accent-2)]">Код отправлен на email</p>
+              <p className="text-sm font-black text-[var(--accent-2)]">
+                {pendingVerification.emailSent ? "Код отправлен на email" : "Письмо не отправлено"}
+              </p>
               <p className="mt-2 break-words text-sm leading-6 muted">{pendingVerification.contact}</p>
-              <p className="mt-4 text-xs font-black uppercase text-[var(--muted)]">Prototype code</p>
-              <p className="mt-1 text-3xl font-black tracking-[0.16em] text-[var(--accent-2)]">{pendingVerification.code}</p>
+              {!pendingVerification.emailSent ? (
+                <div className="mt-4 rounded-2xl border border-[color-mix(in_srgb,var(--amber)_45%,transparent)] bg-[color-mix(in_srgb,var(--amber)_10%,transparent)] p-4">
+                  <p className="text-sm font-bold text-[var(--amber)]">
+                    Почтовый сервис не настроен или домен отправителя не подтверждён. Для проверки аккаунта используй код ниже.
+                  </p>
+                  {pendingVerification.deliveryError ? <p className="mt-2 break-words text-xs muted">{pendingVerification.deliveryError}</p> : null}
+                  <p className="mt-4 text-xs font-black uppercase text-[var(--muted)]">Код подтверждения</p>
+                  <p className="mt-1 text-3xl font-black tracking-[0.16em] text-[var(--accent-2)]">{pendingVerification.code}</p>
+                </div>
+              ) : null}
             </div>
 
             <label className="mt-5 grid gap-2">
@@ -125,7 +166,7 @@ export function RegisterPage() {
             Создать аккаунт PlayFound
           </h1>
           <p className="mt-5 text-lg leading-8 muted">
-            Новые аккаунты всегда создаются как игроки. Разработчиком можно стать потом во вкладке “Для разработчиков”. Сейчас доступна регистрация только по email.
+            Новые аккаунты создаются как профили игроков. Разработчиком можно стать позже через страницу для авторов в футере.
           </p>
         </div>
 
@@ -135,7 +176,7 @@ export function RegisterPage() {
               <Mail size={20} color="var(--accent-2)" />
               <h2 className="text-xl font-black">Email</h2>
             </div>
-            <p className="mt-3 leading-7 muted">Код подтверждения приходит на почту. В mock-режиме код показывается на сайте.</p>
+            <p className="mt-3 leading-7 muted">Основной способ подтверждения аккаунта. Для отправки писем используй Resend и подтверждённый домен отправителя.</p>
           </div>
           <div className="glass-card rounded-[1.5rem] opacity-70 p-5">
             <div className="flex items-center justify-between gap-3">
@@ -151,18 +192,18 @@ export function RegisterPage() {
             <AuthField label="Логин" name="username" placeholder="Например, player_found" />
             <AuthField label="Имя" name="displayName" placeholder="Как показывать тебя на сайте" />
             <AuthField label="Email" name="contact" placeholder="you@example.com" type="email" />
-            <AuthField label="Пароль" name="password" placeholder="Пароль для прототипа" type="password" />
+            <AuthField label="Пароль" name="password" placeholder="Пароль" type="password" />
           </div>
 
           {error ? <ErrorBox error={error} /> : null}
 
-          <button type="submit" className="btn btn-primary mt-6 w-full">
+          <button type="submit" className="btn btn-primary mt-6 w-full" disabled={submitting}>
             <UserPlus size={18} />
-            Создать аккаунт
+            {submitting ? "Создаём аккаунт..." : "Создать аккаунт"}
           </button>
 
           <div className="mt-5 grid gap-2 text-center text-sm muted">
-            <p>Это mock-авторизация: пароли и сессии сохраняются в localStorage только для демонстрации.</p>
+            <p>Аккаунт будет создан как профиль игрока. Разработчиком можно стать позже через страницу для авторов.</p>
             <p>
               Уже есть аккаунт?{" "}
               <Link href="/login" className="font-black text-[var(--accent-2)]">
