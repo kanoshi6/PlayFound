@@ -1,8 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, Clapperboard, Compass, Gamepad2, Heart, Search, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BadgeCheck, Clapperboard, Heart, Search, Sparkles, Users } from "lucide-react";
 import { GameCard } from "@/components/GameCard";
 import { games } from "@/lib/games";
 
@@ -20,7 +19,7 @@ export function HomePage() {
             Находи инди-игры раньше, чем о них заговорят все
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 muted sm:text-xl">
-            PlayFound — игровая платформа для игроков: каталог, короткие ролики, избранное, библиотека, форум, друзья и будущие покупки инди-игр.
+            PlayFound — витрина инди-игр: каталог, короткие ролики, wishlist, корзина, библиотека, форум и друзья.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link href="/catalog" className="btn btn-primary">
@@ -110,12 +109,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="container-shell section-pad">
-        <div className="grid gap-4 lg:grid-cols-2">
-          <AudienceBlock icon={<Gamepad2 size={24} />} title="В первую очередь — игроки" text="Главная ценность PlayFound — найти игру, которую не покажут большие алгоритмы: по жанру, языку, цене, тегам и коротким роликам." href="/catalog" action="Открыть каталог" />
-          <AudienceBlock icon={<Compass size={24} />} title="Разработчики — отдельно, не мешая игрокам" text="Авторы могут стать разработчиками, но это не должно мешать игрокам. Возможность спрятана в футере и на отдельной странице." href="/developers" action="Для разработчиков" />
-        </div>
-      </section>
     </>
   );
 }
@@ -131,20 +124,9 @@ function Showcase({ eyebrow, title, text, games: showcaseGames, compact }: { eye
         </div>
         <Link href="/catalog" className="btn btn-secondary">Каталог <ArrowRight size={18} /></Link>
       </div>
-      <div className={`grid gap-4 ${compact ? "md:grid-cols-2 xl:grid-cols-4" : "md:grid-cols-2 xl:grid-cols-3"}`}>
-        {showcaseGames.map((game, index) => <div className="reveal-card" style={{ animationDelay: `${index * 70}ms` }} key={game.id}><GameCard game={game} compact={compact} /></div>)}
+      <div className={`grid items-stretch gap-4 ${compact ? "md:grid-cols-2 xl:grid-cols-4" : "md:grid-cols-2 xl:grid-cols-3"}`}>
+        {showcaseGames.map((game, index) => <div className="reveal-card h-full" style={{ animationDelay: `${index * 70}ms` }} key={game.id}><GameCard game={game} compact={compact} /></div>)}
       </div>
     </section>
-  );
-}
-
-function AudienceBlock({ icon, title, text, href, action }: { icon: ReactNode; title: string; text: string; href: string; action: string }) {
-  return (
-    <article className="interactive-card glass-card rounded-[1.75rem] p-7">
-      <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[color-mix(in_srgb,var(--accent)_14%,transparent)] text-[var(--accent-2)]">{icon}</span>
-      <h3 className="mt-5 text-3xl font-black">{title}</h3>
-      <p className="mt-3 leading-7 muted">{text}</p>
-      <Link href={href} className="btn btn-primary mt-6 w-fit">{action} <ArrowRight size={18} /></Link>
-    </article>
   );
 }

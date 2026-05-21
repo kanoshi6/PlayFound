@@ -37,6 +37,10 @@ export type PlayFoundSettings = {
   theme: ThemeName;
   compactMode: boolean;
   reduceAnimations: boolean;
+  privateProfile: boolean;
+  emailDigest: boolean;
+  productNews: boolean;
+  friendRequests: boolean;
 };
 
 type PlayFoundContextValue = {
@@ -50,7 +54,16 @@ type PlayFoundContextValue = {
   wishlistCount: number;
   isWishlisted: (gameId: string) => boolean;
   toggleWishlist: (gameId: string) => boolean;
+  cartIds: string[];
+  cartCount: number;
+  isInCart: (gameId: string) => boolean;
+  toggleCart: (gameId: string) => boolean;
+  addToCart: (gameId: string) => boolean;
+  removeFromCart: (gameId: string) => void;
+  clearCart: () => void;
   formatPrice: (priceType: "free" | "paid", seed?: number) => string;
+  getNumericPrice: (priceType: "free" | "paid", seed?: number) => number;
+  currencySymbol: string;
 };
 
 const defaultSettings: PlayFoundSettings = {
@@ -59,11 +72,16 @@ const defaultSettings: PlayFoundSettings = {
   currency: "RUB",
   theme: "darkGreen",
   compactMode: false,
-  reduceAnimations: false
+  reduceAnimations: false,
+  privateProfile: false,
+  emailDigest: true,
+  productNews: true,
+  friendRequests: true
 };
 
-const settingsKey = "playfound-settings-v2";
+const settingsKey = "playfound-settings-v3";
 const wishlistKey = "playfound-wishlist-v1";
+const cartKey = "playfound-cart-v1";
 
 const currencies: Currency[] = ["USD", "EUR", "RUB", "GBP", "PLN", "UAH", "CNY", "JPY", "KRW"];
 const marketLanguages: MarketLanguage[] = ["ru", "en", "es", "de", "fr", "pl", "uk", "zh", "ja", "ko"];
@@ -138,11 +156,15 @@ function sanitizeSettings(value: unknown): PlayFoundSettings {
     theme: isTheme(candidate.theme) ? candidate.theme : defaultSettings.theme,
     compactMode: typeof candidate.compactMode === "boolean" ? candidate.compactMode : defaultSettings.compactMode,
     reduceAnimations:
-      typeof candidate.reduceAnimations === "boolean" ? candidate.reduceAnimations : defaultSettings.reduceAnimations
+      typeof candidate.reduceAnimations === "boolean" ? candidate.reduceAnimations : defaultSettings.reduceAnimations,
+    privateProfile: typeof candidate.privateProfile === "boolean" ? candidate.privateProfile : defaultSettings.privateProfile,
+    emailDigest: typeof candidate.emailDigest === "boolean" ? candidate.emailDigest : defaultSettings.emailDigest,
+    productNews: typeof candidate.productNews === "boolean" ? candidate.productNews : defaultSettings.productNews,
+    friendRequests: typeof candidate.friendRequests === "boolean" ? candidate.friendRequests : defaultSettings.friendRequests
   };
 }
 
-function sanitizeWishlist(value: unknown): string[] {
+function sanitizeStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) {
     return [];
   }
@@ -153,23 +175,33 @@ function sanitizeWishlist(value: unknown): string[] {
 export function PlayFoundProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<PlayFoundSettings>(defaultSettings);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
+  const [cartIds, setCartIds] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     try {
-      const savedSettings = window.localStorage.getItem(settingsKey) ?? window.localStorage.getItem("playfound-settings-v1");
+      const savedSettings =
+        window.localStorage.getItem(settingsKey) ??
+        window.localStorage.getItem("playfound-settings-v2") ??
+        window.localStorage.getItem("playfound-settings-v1");
       const savedWishlist = window.localStorage.getItem(wishlistKey);
+      const savedCart = window.localStorage.getItem(cartKey);
 
       if (savedSettings) {
         setSettings(sanitizeSettings(JSON.parse(savedSettings)));
       }
 
       if (savedWishlist) {
-        setWishlistIds(sanitizeWishlist(JSON.parse(savedWishlist)));
+        setWishlistIds(sanitizeStringArray(JSON.parse(savedWishlist)));
+      }
+
+      if (savedCart) {
+        setCartIds(sanitizeStringArray(JSON.parse(savedCart)));
       }
     } catch {
       setSettings(defaultSettings);
       setWishlistIds([]);
+      setCartIds([]);
     } finally {
       setLoaded(true);
     }
@@ -196,6 +228,12 @@ export function PlayFoundProvider({ children }: { children: ReactNode }) {
       window.localStorage.setItem(wishlistKey, JSON.stringify(wishlistIds));
     }
   }, [loaded, wishlistIds]);
+
+  useEffect(() => {
+    if (loaded) {
+      window.localStorage.setItem(cartKey, JSON.stringify(cartIds));
+    }
+  }, [cartIds, loaded]);
 
   const setSetting = useCallback(
     <K extends keyof PlayFoundSettings>(key: K, value: PlayFoundSettings[K]) => {
@@ -227,14 +265,68 @@ export function PlayFoundProvider({ children }: { children: ReactNode }) {
     return added;
   }, []);
 
+  const isInCart = useCallback(
+    (gameId: string) => cartIds.includes(gameId),
+    [cartIds]
+  );
+
+  const addToCart = useCallback((gameId: string) => {
+    let added = false;
+
+    setCartIds((current) => {
+      if (current.includes(gameId)) {
+        return current;
+      }
+
+      added = true;
+      return [...current, gameId];
+    });
+
+    return added;
+  }, []);
+
+  const removeFromCart = useCallback((gameId: string) => {
+    setCartIds((current) => current.filter((id) => id !== gameId));
+  }, []);
+
+  const toggleCart = useCallback((gameId: string) => {
+    let added = false;
+
+    setCartIds((current) => {
+      if (current.includes(gameId)) {
+        return current.filter((id) => id !== gameId);
+      }
+
+      added = true;
+      return [...current, gameId];
+    });
+
+    return added;
+  }, []);
+
+  const clearCart = useCallback(() => {
+    setCartIds([]);
+  }, []);
+
+  const getNumericPrice = useCallback(
+    (priceType: "free" | "paid", seed = 1) => {
+      if (priceType === "free") {
+        return 0;
+      }
+
+      const usd = 4.99 + (seed % 5) * 2.5;
+      return Math.max(1, Math.round(usd * rates[settings.currency]));
+    },
+    [settings.currency]
+  );
+
   const formatPrice = useCallback(
     (priceType: "free" | "paid", seed = 1) => {
       if (priceType === "free") {
         return settings.language === "ru" ? "Бесплатно" : "Free";
       }
 
-      const usd = 4.99 + (seed % 5) * 2.5;
-      const converted = Math.max(1, Math.round(usd * rates[settings.currency]));
+      const converted = getNumericPrice(priceType, seed);
       const suffix = ["PLN", "UAH"].includes(settings.currency) ? ` ${currencySymbols[settings.currency]}` : "";
       const prefix = ["USD", "EUR", "RUB", "GBP", "CNY", "JPY", "KRW"].includes(settings.currency)
         ? currencySymbols[settings.currency]
@@ -242,7 +334,7 @@ export function PlayFoundProvider({ children }: { children: ReactNode }) {
 
       return `${prefix}${converted}${suffix}`;
     },
-    [settings.currency, settings.language]
+    [getNumericPrice, settings.currency, settings.language]
   );
 
   const value = useMemo<PlayFoundContextValue>(
@@ -254,9 +346,32 @@ export function PlayFoundProvider({ children }: { children: ReactNode }) {
       wishlistCount: wishlistIds.length,
       isWishlisted,
       toggleWishlist,
-      formatPrice
+      cartIds,
+      cartCount: cartIds.length,
+      isInCart,
+      toggleCart,
+      addToCart,
+      removeFromCart,
+      clearCart,
+      formatPrice,
+      getNumericPrice,
+      currencySymbol: currencySymbols[settings.currency]
     }),
-    [formatPrice, isWishlisted, settings, setSetting, toggleWishlist, wishlistIds]
+    [
+      addToCart,
+      cartIds,
+      clearCart,
+      formatPrice,
+      getNumericPrice,
+      isInCart,
+      isWishlisted,
+      removeFromCart,
+      settings,
+      setSetting,
+      toggleCart,
+      toggleWishlist,
+      wishlistIds
+    ]
   );
 
   return <PlayFoundContext.Provider value={value}>{children}</PlayFoundContext.Provider>;

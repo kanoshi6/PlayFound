@@ -812,3 +812,116 @@ html[data-theme="softIndie"] .game-card {
     display: none !important;
   }
 }
+
+.game-card-fixed {
+  min-width: 0;
+}
+
+.game-card-fixed .media-frame img,
+.store-banner .media-frame img,
+.promo-tile .media-frame img,
+.clip-video .media-frame img {
+  transition: transform 520ms cubic-bezier(.2,.75,.2,1), filter 520ms ease;
+}
+
+.game-card-fixed:hover .media-frame img,
+.store-banner:hover .media-frame img,
+.promo-tile:hover .media-frame img,
+.clip-video:hover .media-frame img {
+  transform: scale(1.045);
+  filter: saturate(1.1) contrast(1.04);
+}
+
+.game-card-fixed .btn,
+.game-card-fixed .tag {
+  white-space: nowrap;
+}
+
+html[data-compact="true"] .game-card-fixed {
+  min-height: 25rem;
+}
+
+.clip-snap-feed {
+  display: grid;
+  gap: 1.25rem;
+  max-height: min(86vh, 780px);
+  overflow-y: auto;
+  padding-right: 4.5rem;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.clip-snap-feed::-webkit-scrollbar {
+  width: 0.55rem;
+}
+
+.clip-snap-feed::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 34%, transparent);
+}
+
+.clip-snap-card {
+  display: grid;
+  grid-template-columns: minmax(18rem, 25rem) minmax(0, 1fr);
+  gap: 1.25rem;
+  min-height: min(82vh, 720px);
+  scroll-snap-align: center;
+  align-items: stretch;
+}
+
+.clip-video,
+.clip-side {
+  min-height: min(82vh, 720px);
+}
+
+.clip-side {
+  overflow-y: auto;
+}
+
+.clip-nav-controls {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 8;
+  display: flex;
+  transform: translateY(-50%);
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.clip-nav-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  .clip-snap-feed {
+    max-height: none;
+    padding-right: 0;
+    overflow-y: visible;
+    scroll-snap-type: none;
+  }
+
+  .clip-snap-card {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .clip-video,
+  .clip-side {
+    min-height: auto;
+  }
+
+  .clip-nav-controls {
+    position: sticky;
+    bottom: 1rem;
+    right: auto;
+    top: auto;
+    margin-top: 1rem;
+    transform: none;
+    flex-direction: row;
+    justify-content: center;
+  }
+}

@@ -1,10 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { ReactNode, FormEvent } from "react";
 import Link from "next/link";
-import type { CSSProperties, FormEvent } from "react";
-import { useEffect, useState } from "react";
-import { Bookmark, Flag, Heart, MessageCircle, Play, ShoppingBag, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Bookmark, ChevronDown, ChevronUp, Flag, Heart, MessageCircle, Play, ShoppingBag } from "lucide-react";
 import { games } from "@/lib/games";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -36,10 +35,13 @@ function hasBadWords(value: string) {
 }
 
 export function ClipsPage() {
-  const { formatPrice } = usePlayFound();
-  const [activeClip, setActiveClip] = useState<Clip | null>(null);
   const { session } = useAuth();
+  const { formatPrice, addToCart } = usePlayFound();
   const [interactions, setInteractions] = useState<ClipInteraction[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [comments, setComments] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const itemRefs = useRef<Array<HTMLElement | null>>([]);
 
   const refreshInteractions = () => {
     setInteractions(session ? getClipInteractions(session.userId) : []);
@@ -56,172 +58,187 @@ export function ClipsPage() {
         getClipInteraction(session.userId, clip.id)
       : null;
 
-  return (
-    <section className="container-shell section-pad">
-      <div className="mb-8 max-w-4xl">
-        <span className="eyebrow"><Play size={15} /> PlayFound Shorts</span>
-        <h1 className="mt-5 text-4xl font-black tracking-normal sm:text-6xl">Короткие ролики игр</h1>
-        <p className="mt-5 text-lg leading-8 muted">
-          Нажми на карточку — ролик откроется сразу в вертикальном просмотрщике. Лайки, сохранения и комментарии сохраняются в профиле игрока.
-        </p>
-      </div>
+  const scrollTo = (index: number) => {
+    const nextIndex = Math.max(0, Math.min(baseClips.length - 1, index));
+    setActiveIndex(nextIndex);
+    itemRefs.current[nextIndex]?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        {baseClips.map((clip, index) => {
-          const interaction = getInteractionForClip(clip);
-          return (
-            <button
-              type="button"
-              className="group interactive-card surface overflow-hidden rounded-[1.75rem] text-left transition hover:-translate-y-1 hover:border-[var(--line-strong)]"
-              key={clip.id}
-              onClick={() => setActiveClip(clip)}
-              style={{ animationDelay: `${index * 70}ms` }}
-            >
-              <div className="media-frame relative aspect-[9/16]" style={{ "--media-gradient": clip.game.banner } as CSSProperties}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={clip.game.banner} alt={clip.game.title} className="absolute inset-0 h-full w-full object-cover" />
-                <div className="absolute inset-x-4 top-4 z-10 flex items-center justify-between">
-                  <span className="tag bg-black/40 text-white backdrop-blur">clip</span>
-                  <span className="tag bg-black/40 text-white backdrop-blur">{formatPrice(clip.game.priceType, index + 1)}</span>
-                </div>
-                <div className="absolute inset-0 z-10 grid place-items-center">
-                  <span className="grid h-16 w-16 place-items-center rounded-full border border-white/25 bg-black/35 text-white backdrop-blur transition group-hover:scale-110">
-                    <Play size={26} fill="currentColor" />
-                  </span>
-                </div>
-                <div className="absolute inset-x-4 bottom-4 z-10 text-white">
-                  <p className="text-sm font-black uppercase text-white/75">{clip.title}</p>
-                  <h2 className="mt-2 text-2xl font-black">{clip.game.title}</h2>
-                  <p className="mt-2 line-clamp-2 text-sm text-white/75">{clip.game.shortDescription.ru}</p>
-                </div>
-              </div>
-              <div className="grid gap-3 p-4">
-                <div className="flex justify-between gap-2 text-sm font-bold muted">
-                  <span className="inline-flex items-center gap-1"><Heart size={16} /> {clip.baseLikes + (interaction?.liked ? 1 : 0)}</span>
-                  <span className="inline-flex items-center gap-1"><MessageCircle size={16} /> {clip.baseComments + (interaction?.comments.length ?? 0)}</span>
-                  <span className="inline-flex items-center gap-1"><Bookmark size={16} /> {clip.baseSaved + (interaction?.saved ? 1 : 0)}</span>
-                </div>
-              </div>
-            </button>
-          );
-        })}
-      </div>
+  const setClipError = (clipId: string, text: string) => {
+    setErrors((current) => ({ ...current, [clipId]: text }));
+  };
 
-      {activeClip ? <ClipViewer clip={activeClip} interaction={getInteractionForClip(activeClip)} onActivity={refreshInteractions} onClose={() => setActiveClip(null)} /> : null}
-    </section>
-  );
-}
+  const clearClipError = (clipId: string) => {
+    setErrors((current) => {
+      const next = { ...current };
+      delete next[clipId];
+      return next;
+    });
+  };
 
-function ClipViewer({ clip, interaction, onActivity, onClose }: { clip: Clip; interaction: ClipInteraction | null; onActivity: () => void; onClose: () => void }) {
-  const { formatPrice } = usePlayFound();
-  const { session } = useAuth();
-  const [comment, setComment] = useState("");
-  const [error, setError] = useState("");
-
-  const liked = Boolean(interaction?.liked);
-  const saved = Boolean(interaction?.saved);
-
-  const requireLogin = () => {
-    setError("Нужно войти в аккаунт, чтобы ставить лайки, сохранять ролики и писать комментарии.");
+  const requireLogin = (clipId: string) => {
+    setClipError(clipId, "Нужно войти в аккаунт, чтобы ставить лайки, сохранять ролики и писать комментарии.");
     return false;
   };
 
-  const onLike = () => {
-    if (!session && !requireLogin()) return;
+  const onLike = (clip: Clip) => {
+    if (!session && !requireLogin(clip.id)) return;
     if (session) {
       toggleClipLike(session.userId, clip.id, clip.game, clip.title);
-      setError("");
-      onActivity();
+      clearClipError(clip.id);
+      refreshInteractions();
     }
   };
 
-  const onSave = () => {
-    if (!session && !requireLogin()) return;
+  const onSave = (clip: Clip) => {
+    if (!session && !requireLogin(clip.id)) return;
     if (session) {
       toggleClipSave(session.userId, clip.id, clip.game, clip.title);
-      setError("");
-      onActivity();
+      clearClipError(clip.id);
+      refreshInteractions();
     }
   };
 
-  const onComment = (event: FormEvent<HTMLFormElement>) => {
+  const onComment = (event: FormEvent<HTMLFormElement>, clip: Clip) => {
     event.preventDefault();
-    if (!session && !requireLogin()) return;
-    if (hasBadWords(comment)) {
-      setError("Комментарий не прошёл mock-модерацию: убери мат или оскорбления.");
+    if (!session && !requireLogin(clip.id)) return;
+    const text = comments[clip.id] ?? "";
+    if (hasBadWords(text)) {
+      setClipError(clip.id, "Комментарий не прошёл mock-модерацию: убери мат или оскорбления.");
       return;
     }
     if (session) {
-      addClipComment(session.userId, clip.id, clip.game, clip.title, comment, session.displayName);
-      setComment("");
-      setError("");
-      onActivity();
+      const result = addClipComment(session.userId, clip.id, clip.game, clip.title, text, session.displayName);
+      if (!result) {
+        setClipError(clip.id, "Комментарий пустой.");
+        return;
+      }
+      setComments((current) => ({ ...current, [clip.id]: "" }));
+      clearClipError(clip.id);
+      refreshInteractions();
     }
   };
 
+  const activeClip = baseClips[activeIndex];
+  const activeGame = activeClip.game;
+
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/84 p-3 backdrop-blur-xl">
-      <button type="button" className="absolute inset-0 cursor-default" aria-label="Закрыть" onClick={onClose} />
-      <div className="clip-viewer relative grid w-full max-w-6xl gap-4 md:grid-cols-[minmax(18rem,27rem)_1fr]">
-        <div className="surface relative overflow-hidden rounded-[2rem]">
-          <div className="media-frame aspect-[9/16]" style={{ "--media-gradient": clip.game.banner } as CSSProperties}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={clip.game.banner} alt={clip.game.title} className="absolute inset-0 h-full w-full object-cover" />
-            <button type="button" className="absolute right-4 top-4 z-20 grid h-11 w-11 place-items-center rounded-full bg-black/45 text-white backdrop-blur" onClick={onClose}>
-              <X size={21} />
-            </button>
-            <div className="absolute inset-0 z-10 grid place-items-center">
-              <span className="grid h-20 w-20 place-items-center rounded-full border border-white/25 bg-black/35 text-white backdrop-blur pulse-glow">
-                <Play size={32} fill="currentColor" />
-              </span>
-            </div>
-            <div className="absolute inset-x-5 bottom-5 z-10 text-white">
-              <p className="font-black uppercase text-white/75">{clip.title}</p>
-              <h2 className="mt-2 text-3xl font-black">{clip.game.title}</h2>
-            </div>
-          </div>
+    <section className="container-shell section-pad">
+      <div className="mb-8 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
+        <div className="max-w-4xl">
+          <span className="eyebrow"><Play size={15} /> PlayFound Shorts</span>
+          <h1 className="mt-5 text-4xl font-black tracking-normal sm:text-6xl">Ролики игр</h1>
+          <p className="mt-5 text-lg leading-8 muted">
+            Лента работает как reels: листай вверх/вниз или кнопками справа. Лайки, сохранения и комментарии потом отображаются в профиле.
+          </p>
+        </div>
+        <div className="surface rounded-[1.4rem] p-4 text-sm leading-6 muted lg:max-w-sm">
+          Сейчас открыт: <strong className="text-[var(--accent-2)]">{activeGame.title}</strong>. Всего роликов: {baseClips.length}.
+        </div>
+      </div>
+
+      <div className="relative">
+        <div className="clip-snap-feed">
+          {baseClips.map((clip, index) => {
+            const interaction = getInteractionForClip(clip);
+            const liked = Boolean(interaction?.liked);
+            const saved = Boolean(interaction?.saved);
+            const error = errors[clip.id];
+            const commentValue = comments[clip.id] ?? "";
+
+            return (
+              <article
+                className="clip-snap-card reveal-card"
+                ref={(node) => { itemRefs.current[index] = node; }}
+                key={clip.id}
+                onMouseEnter={() => setActiveIndex(index)}
+              >
+                <div className="clip-video surface overflow-hidden rounded-[2rem]">
+                  <div className="media-frame aspect-[9/16] min-h-[34rem]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={clip.game.banner} alt={clip.game.title} className="absolute inset-0 h-full w-full object-cover" />
+                    <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/18 via-black/0 to-black/72" />
+                    <div className="absolute inset-x-5 top-5 z-20 flex items-center justify-between">
+                      <span className="tag bg-black/45 text-white backdrop-blur">clip</span>
+                      {clip.game.priceType === "paid" ? <span className="tag bg-black/45 text-white backdrop-blur">{formatPrice(clip.game.priceType, index + 1)}</span> : null}
+                    </div>
+                    <div className="absolute inset-0 z-20 grid place-items-center">
+                      <span className="grid h-20 w-20 place-items-center rounded-full border border-white/25 bg-black/36 text-white backdrop-blur pulse-glow">
+                        <Play size={32} fill="currentColor" />
+                      </span>
+                    </div>
+                    <div className="absolute inset-x-5 bottom-5 z-20 text-white">
+                      <p className="font-black uppercase text-white/72">{clip.title}</p>
+                      <h2 className="mt-2 text-3xl font-black">{clip.game.title}</h2>
+                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-white/78">{clip.game.shortDescription.ru}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <aside className="clip-side surface rounded-[2rem] p-5">
+                  <div className="flex flex-wrap gap-2">
+                    <span className="tag">{clip.game.platforms.join(" · ")}</span>
+                    <span className="tag">{clip.game.status === "release" ? "релиз" : "демо/ранний доступ"}</span>
+                  </div>
+                  <h2 className="mt-4 text-3xl font-black">{clip.game.title}</h2>
+                  <p className="mt-3 line-clamp-4 leading-7 muted">{clip.game.description.ru}</p>
+
+                  <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                    <Action active={liked} icon={<Heart size={18} fill={liked ? "currentColor" : "none"} />} label="Лайк" value={String(clip.baseLikes + (liked ? 1 : 0))} onClick={() => onLike(clip)} />
+                    <Action icon={<MessageCircle size={18} />} label="Комменты" value={String(clip.baseComments + (interaction?.comments.length ?? 0))} />
+                    <Action active={saved} icon={<Bookmark size={18} fill={saved ? "currentColor" : "none"} />} label="Сохранить" value={String(clip.baseSaved + (saved ? 1 : 0))} onClick={() => onSave(clip)} />
+                  </div>
+
+                  {error ? <p className="mt-4 rounded-2xl border border-[color-mix(in_srgb,var(--danger)_45%,transparent)] bg-[color-mix(in_srgb,var(--danger)_10%,transparent)] p-3 text-sm font-bold text-[var(--danger)]">{error}</p> : null}
+
+                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                    <Link href={`/games/${clip.game.slug}`} className="btn btn-secondary">Перейти к игре</Link>
+                    {clip.game.priceType === "free" ? (
+                      <Link href={`/games/${clip.game.slug}`} className="btn btn-primary"><ShoppingBag size={18} /> Скачать</Link>
+                    ) : (
+                      <button type="button" className="btn btn-primary" onClick={() => addToCart(clip.game.id)}><ShoppingBag size={18} /> В корзину</button>
+                    )}
+                  </div>
+                  <button type="button" className="btn btn-ghost mt-3"><Flag size={17} /> Пожаловаться</button>
+
+                  <form className="mt-5 grid gap-3 rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4" onSubmit={(event) => onComment(event, clip)}>
+                    <label className="grid gap-2">
+                      <span className="font-black">Комментарий</span>
+                      <textarea className="input min-h-24 resize-y" value={commentValue} onChange={(event) => setComments((current) => ({ ...current, [clip.id]: event.target.value }))} placeholder="Напиши мнение о ролике" maxLength={280} />
+                    </label>
+                    <button type="submit" className="btn btn-primary justify-self-start"><MessageCircle size={17} /> Отправить</button>
+                  </form>
+
+                  <div className="mt-5 grid gap-3">
+                    <h3 className="text-xl font-black">Комментарии</h3>
+                    {interaction?.comments.length ? (
+                      interaction.comments.slice(0, 3).map((item) => (
+                        <article className="rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4" key={item.id}>
+                          <p className="font-black">{item.userName ?? "Игрок"}</p>
+                          <p className="mt-2 text-sm leading-6 muted">{item.text}</p>
+                        </article>
+                      ))
+                    ) : (
+                      <p className="rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4 text-sm leading-6 muted">Комментариев пока нет.</p>
+                    )}
+                  </div>
+                </aside>
+              </article>
+            );
+          })}
         </div>
 
-        <aside className="surface relative max-h-[88vh] overflow-y-auto rounded-[2rem] p-6">
-          <span className="tag">Ролик открыт</span>
-          <h2 className="mt-4 text-3xl font-black">{clip.game.title}</h2>
-          <p className="mt-3 leading-7 muted">{clip.game.description.ru}</p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            <Action active={liked} icon={<Heart size={18} fill={liked ? "currentColor" : "none"} />} label="Лайк" value={String(clip.baseLikes + (liked ? 1 : 0))} onClick={onLike} />
-            <Action icon={<MessageCircle size={18} />} label="Комментарии" value={String(clip.baseComments + (interaction?.comments.length ?? 0))} />
-            <Action active={saved} icon={<Bookmark size={18} fill={saved ? "currentColor" : "none"} />} label="Сохранить" value={String(clip.baseSaved + (saved ? 1 : 0))} onClick={onSave} />
-          </div>
-          {error ? <p className="mt-4 rounded-2xl border border-[color-mix(in_srgb,var(--danger)_45%,transparent)] bg-[color-mix(in_srgb,var(--danger)_10%,transparent)] p-3 text-sm font-bold text-[var(--danger)]">{error}</p> : null}
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <Link href={`/games/${clip.game.slug}`} className="btn btn-secondary">Перейти к игре</Link>
-            <Link href={`/games/${clip.game.slug}`} className="btn btn-primary"><ShoppingBag size={18} /> {clip.game.priceType === "free" ? "Скачать" : `Купить ${formatPrice(clip.game.priceType, 2)}`}</Link>
-          </div>
-          <button type="button" className="btn btn-ghost mt-3"><Flag size={17} /> Пожаловаться</button>
-
-          <form className="mt-6 grid gap-3 rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4" onSubmit={onComment}>
-            <label className="grid gap-2">
-              <span className="font-black">Оставить комментарий</span>
-              <textarea className="input min-h-24 resize-y" value={comment} onChange={(event) => setComment(event.target.value)} placeholder="Напиши мнение о ролике или игре" maxLength={280} />
-            </label>
-            <button type="submit" className="btn btn-primary justify-self-start"><MessageCircle size={17} /> Отправить</button>
-          </form>
-
-          <div className="mt-5 grid gap-3">
-            <h3 className="text-xl font-black">Комментарии</h3>
-            {interaction?.comments.length ? (
-              interaction.comments.map((item) => (
-                <article className="rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4" key={item.id}>
-                  <p className="font-black">{item.userName ?? "Игрок"}</p>
-                  <p className="mt-2 text-sm leading-6 muted">{item.text}</p>
-                </article>
-              ))
-            ) : (
-              <p className="rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4 text-sm leading-6 muted">Комментариев пока нет. Будь первым.</p>
-            )}
-          </div>
-        </aside>
+        <div className="clip-nav-controls">
+          <button type="button" className="btn btn-secondary h-12 w-12 px-0" onClick={() => scrollTo(activeIndex - 1)} disabled={activeIndex === 0} aria-label="Предыдущий ролик">
+            <ChevronUp size={22} />
+          </button>
+          <span className="rounded-full border border-[var(--line)] bg-[var(--panel-strong)] px-3 py-2 text-xs font-black">{activeIndex + 1}/{baseClips.length}</span>
+          <button type="button" className="btn btn-secondary h-12 w-12 px-0" onClick={() => scrollTo(activeIndex + 1)} disabled={activeIndex === baseClips.length - 1} aria-label="Следующий ролик">
+            <ChevronDown size={22} />
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 

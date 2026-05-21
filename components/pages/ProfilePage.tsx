@@ -25,9 +25,21 @@ import {
   type UserAccount
 } from "@/lib/auth-context";
 import { games } from "@/lib/games";
-import { usePlayFound } from "@/lib/settings-context";
+import { type ThemeName, usePlayFound } from "@/lib/settings-context";
 
 const colorOptions = ["#9af2bf", "#38d574", "#5bd9d0", "#f0bc5e", "#ff8ab0", "#b49cff", "#ffffff"];
+const themeOptions: Array<{ value: ThemeName; label: string; text: string }> = [
+  { value: "darkGreen", label: "Dark Green", text: "основной зелёно-чёрный стиль" },
+  { value: "pureDark", label: "Pure Dark", text: "почти полностью тёмный" },
+  { value: "light", label: "Minimal Light", text: "светлый минимализм" },
+  { value: "streetStyle", label: "Street Style", text: "уличные постеры и граффити" },
+  { value: "pixel90s", label: "Pixel 90s", text: "ретро, CRT и пиксельность" },
+  { value: "darkNeon", label: "Dark Neon", text: "киберпанк и неон" },
+  { value: "fantasyScroll", label: "Fantasy Scroll", text: "пергамент и фэнтези" },
+  { value: "arcadeClub", label: "Arcade Club", text: "зал игровых автоматов" },
+  { value: "horrorVhs", label: "Horror VHS", text: "VHS-шум и хоррор" },
+  { value: "softIndie", label: "Soft Indie", text: "мягкий уютный инди" }
+];
 
 export function ProfilePage() {
   const {
@@ -40,7 +52,7 @@ export function ProfilePage() {
     declineFriendRequest,
     refreshAuthData
   } = useAuth();
-  const { wishlistIds } = usePlayFound();
+  const { wishlistIds, settings, setSetting } = usePlayFound();
   const [users, setUsers] = useState<UserAccount[]>([]);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<AuthError | null>(null);
@@ -333,6 +345,26 @@ export function ProfilePage() {
                       <input type="radio" name="nicknameColor" value={color} defaultChecked={user.nicknameColor === color} className="sr-only" />
                       <span className="h-5 w-5 rounded-full border border-white/20" style={{ background: color }} />
                     </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid gap-3 rounded-[1.35rem] border border-[var(--line)] bg-[var(--panel-soft)] p-4">
+                <div>
+                  <span className="text-sm font-black">Тема оформления</span>
+                  <p className="mt-1 text-sm leading-6 muted">Смена темы теперь находится в профиле, а настройки отвечают за язык, валюту и приватность.</p>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                  {themeOptions.map((theme) => (
+                    <button
+                      type="button"
+                      className={`rounded-2xl border p-3 text-left transition hover:-translate-y-0.5 hover:border-[var(--line-strong)] ${settings.theme === theme.value ? "border-[var(--accent)] bg-[color-mix(in_srgb,var(--accent)_14%,transparent)]" : "border-[var(--line)] bg-[var(--panel-strong)]"}`}
+                      key={theme.value}
+                      onClick={() => setSetting("theme", theme.value)}
+                    >
+                      <span className="block font-black">{theme.label}</span>
+                      <span className="mt-1 block text-xs leading-5 muted">{theme.text}</span>
+                    </button>
                   ))}
                 </div>
               </div>

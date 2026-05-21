@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ArrowRight, Eye, Filter, Search, SlidersHorizontal, Sparkles, Tags } from "lucide-react";
+import { ArrowRight, Eye, Filter, Search, SlidersHorizontal, Tags } from "lucide-react";
 import { GameCard } from "@/components/GameCard";
 import { GameMedia } from "@/components/GameMedia";
 import { games, type Genre, type Platform, type PriceType, type Status } from "@/lib/games";
-import { type Currency, type MarketLanguage, usePlayFound } from "@/lib/settings-context";
+import { usePlayFound } from "@/lib/settings-context";
 
 type SortMode = "newest" | "popular" | "rating" | "price" | "sale" | "demos" | "releases";
 type MultiplayerMode = "all" | "single" | "multi";
@@ -26,22 +26,8 @@ const tagFilters: Array<{ value: FilterTag; label: string }> = [
   { value: "story", label: "сюжет" },
   { value: "survival", label: "выживание" }
 ];
-const currencies: Currency[] = ["USD", "EUR", "RUB", "GBP", "PLN", "UAH", "CNY", "JPY", "KRW"];
-const marketLanguages: Array<{ value: MarketLanguage; label: string }> = [
-  { value: "ru", label: "Русский" },
-  { value: "en", label: "English" },
-  { value: "es", label: "Español" },
-  { value: "de", label: "Deutsch" },
-  { value: "fr", label: "Français" },
-  { value: "pl", label: "Polski" },
-  { value: "uk", label: "Українська" },
-  { value: "zh", label: "中文" },
-  { value: "ja", label: "日本語" },
-  { value: "ko", label: "한국어" }
-];
-
 export function CatalogPage() {
-  const { settings, setSetting, t, formatPrice } = usePlayFound();
+  const { settings, t, formatPrice } = usePlayFound();
   const [query, setQuery] = useState("");
   const [genre, setGenre] = useState<Genre | "all">("all");
   const [platform, setPlatform] = useState<Platform | "all">("all");
@@ -115,12 +101,11 @@ export function CatalogPage() {
           <span className="eyebrow"><SlidersHorizontal size={15} /> Каталог PlayFound</span>
           <h1 className="mt-5 text-4xl font-black tracking-normal sm:text-6xl">Магазинные витрины для инди-игр</h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 muted">
-            Большие баннеры, полки с подборками, карточки с быстрым предпросмотром, валюты, языки и фильтры. Вдохновлено удобством игровых магазинов, но визуальный стиль PlayFound остаётся оригинальным.
+            Большие баннеры, полки с подборками, ровные карточки, wishlist, корзина и фильтры. Вдохновлено удобством игровых магазинов, но визуальный стиль PlayFound остаётся оригинальным.
           </p>
         </div>
-        <div className="grid min-w-[18rem] gap-3 rounded-[1.5rem] border border-[var(--line)] bg-[var(--panel-soft)] p-4 sm:grid-cols-2 lg:min-w-[24rem]">
-          <SelectField label="Валюта" value={settings.currency} onChange={(value) => setSetting("currency", value as Currency)} options={currencies.map((item) => ({ value: item, label: item }))} />
-          <SelectField label="Язык игр" value={settings.marketLanguage} onChange={(value) => setSetting("marketLanguage", value as MarketLanguage)} options={marketLanguages} />
+        <div className="rounded-[1.5rem] border border-[var(--line)] bg-[var(--panel-soft)] p-4 text-sm leading-6 muted lg:max-w-sm">
+          Валюта и язык игр меняются в настройках через кнопку с шестерёнкой в верхней панели.
         </div>
       </div>
 
@@ -182,9 +167,9 @@ export function CatalogPage() {
       </div>
 
       {filteredGames.length > 0 ? (
-        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-6 grid items-stretch gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filteredGames.map((game, index) => (
-            <div className="reveal-card" style={{ animationDelay: `${index * 45}ms` }} key={game.id}>
+            <div className="reveal-card h-full" style={{ animationDelay: `${index * 45}ms` }} key={game.id}>
               <GameCard game={game} />
             </div>
           ))}

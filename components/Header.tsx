@@ -14,6 +14,7 @@ import {
   Plus,
   Settings,
   ShieldCheck,
+  ShoppingCart,
   User,
   UserPlus,
   X
@@ -31,7 +32,7 @@ const playerNav = [
 
 export function Header() {
   const pathname = usePathname();
-  const { wishlistCount } = usePlayFound();
+  const { wishlistCount, cartCount } = usePlayFound();
   const { loaded, session, currentUser, developerProfile, logout } = useAuth();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -39,7 +40,7 @@ export function Header() {
   const closeMenu = () => setMenuOpen(false);
 
   const nav = (
-    <nav className="flex flex-col gap-1 xl:flex-row xl:items-center xl:gap-1">
+    <nav className="flex flex-col gap-1 xl:flex-row xl:items-center xl:gap-1.5">
       <NavLink href="/" label="Главная" active={pathname === "/"} onClick={closeMenu} />
       {playerNav.map((item) => {
         const Icon = item.icon;
@@ -53,7 +54,7 @@ export function Header() {
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[color-mix(in_srgb,var(--bg)_90%,transparent)] backdrop-blur-2xl">
-        <div className="mx-auto flex min-h-[4.35rem] w-full max-w-[1440px] items-center justify-between gap-2 px-2 sm:px-0">
+        <div className="mx-auto flex min-h-[4.35rem] w-full max-w-[1440px] items-center justify-between gap-3 px-3 sm:px-4">
           <Link href="/" className="group flex min-w-0 shrink-0 items-center gap-2.5">
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-[var(--line-strong)] bg-[color-mix(in_srgb,var(--accent)_14%,transparent)] shadow-glow transition group-hover:scale-105">
               <Gamepad2 size={22} color="var(--accent-2)" />
@@ -61,7 +62,7 @@ export function Header() {
             <span className="hidden min-w-0 flex-col leading-none sm:flex">
               <span className="whitespace-nowrap text-lg font-black tracking-normal">PlayFound</span>
               <span className="mt-1 hidden whitespace-nowrap text-[0.64rem] font-black uppercase tracking-[0.08em] text-[var(--muted)] 2xl:block">
-                инди-платформа
+                каталог инди-игр
               </span>
             </span>
           </Link>
@@ -69,23 +70,23 @@ export function Header() {
           <div className="hidden min-w-0 flex-1 justify-center xl:flex">{nav}</div>
 
           <div className="flex shrink-0 items-center gap-1.5">
-            <Link
-              href="/catalog"
-              className="hidden h-10 items-center gap-2 rounded-full border border-[var(--line)] px-3 text-sm font-black text-[var(--muted-strong)] transition hover:border-[var(--line-strong)] md:flex"
-              title="Wishlist"
-            >
-              <Heart size={16} color="var(--accent)" />
-              {wishlistCount}
-            </Link>
+            <HeaderIconLink href="/wishlist" title="Wishlist" active={pathname.startsWith("/wishlist")}>
+              <Heart size={17} color="var(--accent)" />
+              <span>{wishlistCount}</span>
+            </HeaderIconLink>
+            <HeaderIconLink href="/cart" title="Корзина" active={pathname.startsWith("/cart")}>
+              <ShoppingCart size={17} color="var(--accent-2)" />
+              <span>{cartCount}</span>
+            </HeaderIconLink>
             <Link
               href="/notifications"
-              className="hidden h-10 w-10 place-items-center rounded-full border border-[var(--line)] text-[var(--muted-strong)] transition hover:border-[var(--line-strong)] hover:text-[var(--text)] md:grid"
+              className="hidden h-11 w-11 place-items-center rounded-full border border-[var(--line)] text-[var(--muted-strong)] transition hover:border-[var(--line-strong)] hover:text-[var(--text)] md:grid"
               title="Уведомления"
             >
-              <Bell size={17} />
+              <Bell size={18} />
             </Link>
-            <button type="button" className="btn btn-ghost h-10 w-10 px-0" aria-label="Настройки" onClick={() => setSettingsOpen(true)}>
-              <Settings size={18} />
+            <button type="button" className="btn btn-secondary h-12 w-12 px-0" aria-label="Настройки" title="Настройки" onClick={() => setSettingsOpen(true)}>
+              <Settings size={21} />
             </button>
 
             {loaded && !session ? (
@@ -105,7 +106,7 @@ export function Header() {
               <>
                 <Link href="/profile" className="btn btn-secondary hidden md:flex">
                   <User size={17} />
-                  <span className="max-w-24 truncate" style={{ color: currentUser?.nicknameColor }}>
+                  <span className="max-w-28 truncate" style={{ color: currentUser?.nicknameColor }}>
                     {session.activeRole === "developer" ? developerProfile?.displayName ?? session.displayName : session.displayName}
                   </span>
                 </Link>
@@ -129,7 +130,7 @@ export function Header() {
               </>
             ) : null}
 
-            <button type="button" className="btn btn-secondary h-10 w-10 px-0 xl:hidden" aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"} onClick={() => setMenuOpen((current) => !current)}>
+            <button type="button" className="btn btn-secondary h-11 w-11 px-0 xl:hidden" aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"} onClick={() => setMenuOpen((current) => !current)}>
               {menuOpen ? <X size={19} /> : <Menu size={19} />}
             </button>
           </div>
@@ -139,6 +140,11 @@ export function Header() {
           <div className="border-t border-[var(--line)] xl:hidden">
             <div className="container-shell grid gap-4 py-4">
               {nav}
+              <div className="grid gap-2 sm:grid-cols-3">
+                <Link href="/wishlist" onClick={closeMenu} className="btn btn-secondary"><Heart size={18} /> Wishlist</Link>
+                <Link href="/cart" onClick={closeMenu} className="btn btn-secondary"><ShoppingCart size={18} /> Корзина</Link>
+                <Link href="/notifications" onClick={closeMenu} className="btn btn-secondary"><Bell size={18} /> Уведомления</Link>
+              </div>
               {loaded && !session ? (
                 <div className="grid gap-2 sm:grid-cols-2">
                   <Link href="/login" onClick={closeMenu} className="btn btn-secondary"><LogIn size={18} /> Войти</Link>
@@ -171,6 +177,22 @@ export function Header() {
 
       <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </>
+  );
+}
+
+function HeaderIconLink({ href, title, active, children }: { href: string; title: string; active: boolean; children: ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className={`hidden h-11 items-center gap-2 rounded-full border px-3 text-sm font-black transition md:flex ${
+        active
+          ? "border-[var(--accent)] bg-[color-mix(in_srgb,var(--accent)_13%,transparent)] text-[var(--accent-2)]"
+          : "border-[var(--line)] text-[var(--muted-strong)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
+      }`}
+      title={title}
+    >
+      {children}
+    </Link>
   );
 }
 
