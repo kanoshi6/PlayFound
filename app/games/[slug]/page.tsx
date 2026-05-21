@@ -19,7 +19,7 @@ export default async function Page({ params }: Props) {
   const game = getGameBySlug(slug);
 
   if (!game) {
-    notFound();
+    return notFound();
   }
 
   return <GameDetailPage game={game} />;

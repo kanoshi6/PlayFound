@@ -11,7 +11,6 @@ export function Footer() {
     { href: "/catalog", label: "Каталог" },
     { href: "/clips", label: "Ролики" },
     { href: "/forum", label: "Форум" },
-    { href: "/jobs", label: "Вакансии" },
     { href: "/notifications", label: "Уведомления" },
     { href: "/profile", label: "Профиль" }
   ];
@@ -21,7 +20,7 @@ export function Footer() {
     { href: "/about", label: "О проекте" },
     { href: "/developers", label: session?.activeRole === "player" ? "Стать разработчиком" : "Для разработчиков" },
     ...(session?.activeRole === "developer"
-      ? [{ href: "/developer/games", label: "Мои игры" }, { href: "/submit", label: "Добавить игру" }]
+      ? [{ href: "/developer/games", label: "Мои игры" }, { href: "/submit", label: "Добавить игру" }, { href: "/jobs", label: "Вакансии" }]
       : []),
     ...(session?.activeRole === "admin" ? [{ href: "/admin", label: "Админка" }] : [])
   ];
@@ -43,7 +42,7 @@ export function Footer() {
             PlayFound в первую очередь помогает игрокам находить новые инди-игры: каталог, ролики, избранное, форум, друзья и библиотека.
           </p>
           <p className="mt-4 max-w-md text-sm leading-6 muted">
-            Без подписок. Только бесплатные игры, разовые покупки, донаты, промокоды и будущая комиссия с продаж после подключения backend.
+            Модель платформы: бесплатные игры, разовые покупки, донаты, промокоды и будущая комиссия с продаж после подключения backend.
           </p>
         </div>
 

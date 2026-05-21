@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { ExternalLink, Heart, MessageSquare, Star } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -211,7 +212,7 @@ function ContentBlock({
   children
 }: {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <section className="glass-card rounded-[1.5rem] p-5 sm:p-6">

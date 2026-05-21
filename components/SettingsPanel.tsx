@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import {
   Brush,
   Languages,
@@ -30,7 +31,7 @@ const themes: Array<{
   label: string;
   text: string;
   color: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
 }> = [
   { value: "darkGreen", label: "Dark Green", text: "главная тема PlayFound", color: "#38d574", icon: <Palette size={17} /> },
   { value: "pureDark", label: "Pure Dark", text: "строже и темнее", color: "#f4f7f4", icon: <Moon size={17} /> },
@@ -180,7 +181,7 @@ function SettingToggle({
   checked: boolean;
   label: string;
   text: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   onChange: (checked: boolean) => void;
 }) {
   return (

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { BarChart3, Eye, Heart, MessageSquare, Plus } from "lucide-react";
@@ -199,7 +200,7 @@ function Metric({
   label,
   value
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   value: number | string;
 }) {

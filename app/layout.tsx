@@ -1,7 +1,9 @@
+import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Providers } from "@/components/Providers";
+import { PageTransition } from "@/components/PageTransition";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,7 +21,7 @@ export const viewport: Viewport = {
 export default function RootLayout({
   children
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="ru" data-theme="darkGreen" suppressHydrationWarning>
@@ -27,7 +29,7 @@ export default function RootLayout({
         <Providers>
           <div className="min-h-screen">
             <Header />
-            <main>{children}</main>
+            <PageTransition>{children}</PageTransition>
             <Footer />
           </div>
         </Providers>

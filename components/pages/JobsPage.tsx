@@ -1,6 +1,8 @@
 "use client";
 
-import { Briefcase, CheckCircle2, Clock, Filter, Send } from "lucide-react";
+import Link from "next/link";
+import { Briefcase, CheckCircle2, Clock, Filter, Lock, Send } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 const jobs = [
   {
@@ -30,32 +32,53 @@ const jobs = [
 ];
 
 export function JobsPage() {
+  const { loaded, session } = useAuth();
+
+  if (!loaded) {
+    return <AccessState title="Вакансии" text="Проверяем роль аккаунта..." />;
+  }
+
+  if (!session) {
+    return (
+      <AccessState
+        title="Вакансии доступны после входа"
+        text="Вакансии — рабочий инструмент для команд и разработчиков. Сначала войди, потом создай developer-профиль."
+        actionHref="/login"
+        action="Войти"
+      />
+    );
+  }
+
+  if (session.activeRole !== "developer" && session.activeRole !== "admin") {
+    return (
+      <AccessState
+        title="Только для разработчиков"
+        text="Раздел вакансий спрятан от обычных игроков, чтобы PlayFound оставался платформой поиска игр. Стать разработчиком можно через футер или страницу для авторов."
+        actionHref="/developers"
+        action="Стать разработчиком"
+      />
+    );
+  }
+
   return (
     <section className="container-shell section-pad">
       <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
         <div>
           <span className="eyebrow">
             <Briefcase size={15} />
-            Вакансии
+            Вакансии разработчиков
           </span>
           <h1 className="mt-5 text-4xl font-black tracking-normal sm:text-6xl">
             Команды для инди-игр
           </h1>
           <p className="mt-5 text-lg leading-8 muted">
-            Разработчики публикуют вакансии, а хелперы или админы проверяют их перед появлением в ленте. Это защищает игроков от скама и мусорных объявлений.
+            Разработчики публикуют вакансии, а хелперы или админы проверяют их перед появлением в ленте. Игрокам этот раздел не бросается в глаза.
           </p>
         </div>
         <div className="glass-card rounded-[1.5rem] p-5">
           <h2 className="text-2xl font-black">Фильтры</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {[
-              "Роль",
-              "Оплата",
-              "Формат",
-              "Опыт",
-              "Навыки",
-              "Статус"
-            ].map((filter) => (
+            {["Роль", "Оплата", "Формат", "Опыт", "Навыки", "Статус"].map((filter) => (
               <button type="button" className="btn btn-secondary justify-start" key={filter}>
                 <Filter size={16} />
                 {filter}
@@ -103,6 +126,33 @@ export function JobsPage() {
             ))}
           </div>
         </aside>
+      </div>
+    </section>
+  );
+}
+
+function AccessState({ title, text, actionHref, action }: { title: string; text: string; actionHref?: string; action?: string }) {
+  return (
+    <section className="container-shell flex min-h-[70vh] items-center py-20">
+      <div className="glass-card max-w-2xl rounded-[1.75rem] p-8">
+        <span className="eyebrow"><Lock size={15} /> Закрытый раздел</span>
+        <h1 className="mt-5 text-4xl font-black">{title}</h1>
+        <p className="mt-4 leading-7 muted">{text}</p>
+        {actionHref && action ? <Link href={actionHref} className="btn btn-primary mt-6">{action}</Link> : null}
+      </div>
+    </section>
+  );
+}
+
+
+function AccessCard({ title, text, actionHref, action }: { title: string; text: string; actionHref?: string; action?: string }) {
+  return (
+    <section className="container-shell flex min-h-[70vh] items-center py-20">
+      <div className="glass-card max-w-2xl rounded-[1.5rem] p-8">
+        <span className="eyebrow"><Briefcase size={15} /> Вакансии</span>
+        <h1 className="mt-4 text-4xl font-black">{title}</h1>
+        <p className="mt-4 leading-7 muted">{text}</p>
+        {actionHref && action ? <Link href={actionHref} className="btn btn-primary mt-6">{action}</Link> : null}
       </div>
     </section>
   );

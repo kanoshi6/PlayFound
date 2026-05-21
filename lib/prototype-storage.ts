@@ -227,3 +227,99 @@ export function createDemoAdminData() {
     });
   }
 }
+
+export type ClipComment = {
+  id: string;
+  userId: string;
+  userName: string;
+  text: string;
+  createdAt: string;
+};
+
+export type ClipActivity = {
+  clipId: string;
+  gameId: string;
+  gameTitle: string;
+  clipTitle: string;
+  likedBy: string[];
+  savedBy: string[];
+  comments: ClipComment[];
+  updatedAt: string;
+};
+
+const clipActivityKey = "playfound-clip-activity-v1";
+
+export function getClipActivities() {
+  return readCollection<ClipActivity>(clipActivityKey);
+}
+
+export function getClipActivity(clipId: string, fallback: Omit<ClipActivity, "likedBy" | "savedBy" | "comments" | "updatedAt">) {
+  const existing = getClipActivities().find((activity) => activity.clipId === clipId);
+  if (existing) {
+    return existing;
+  }
+
+  return {
+    ...fallback,
+    likedBy: [],
+    savedBy: [],
+    comments: [],
+    updatedAt: new Date().toISOString()
+  } satisfies ClipActivity;
+}
+
+function upsertClipActivity(activity: ClipActivity) {
+  const activities = getClipActivities();
+  const next = [activity, ...activities.filter((item) => item.clipId !== activity.clipId)];
+  writeCollection(clipActivityKey, next);
+  return activity;
+}
+
+export function toggleClipLike(activity: ClipActivity, userId: string) {
+  const liked = activity.likedBy.includes(userId);
+  return upsertClipActivity({
+    ...activity,
+    likedBy: liked ? activity.likedBy.filter((id) => id !== userId) : [...activity.likedBy, userId],
+    updatedAt: new Date().toISOString()
+  });
+}
+
+export function toggleClipSave(activity: ClipActivity, userId: string) {
+  const saved = activity.savedBy.includes(userId);
+  return upsertClipActivity({
+    ...activity,
+    savedBy: saved ? activity.savedBy.filter((id) => id !== userId) : [...activity.savedBy, userId],
+    updatedAt: new Date().toISOString()
+  });
+}
+
+export function addClipComment(activity: ClipActivity, userId: string, userName: string, text: string) {
+  const cleanText = text.trim();
+  if (!cleanText) {
+    return activity;
+  }
+
+  return upsertClipActivity({
+    ...activity,
+    comments: [
+      {
+        id: createId("clip-comment"),
+        userId,
+        userName,
+        text: cleanText.slice(0, 280),
+        createdAt: new Date().toISOString()
+      },
+      ...activity.comments
+    ],
+    updatedAt: new Date().toISOString()
+  });
+}
+
+export function getClipActivitiesForUser(userId: string) {
+  return getClipActivities().filter(
+    (activity) =>
+      activity.likedBy.includes(userId) ||
+      activity.savedBy.includes(userId) ||
+      activity.comments.some((comment) => comment.userId === userId)
+  );
+}

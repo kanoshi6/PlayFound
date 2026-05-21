@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Bell,
-  Briefcase,
   Clapperboard,
   Gamepad2,
   Heart,
@@ -19,16 +18,15 @@ import {
   UserPlus,
   X
 } from "lucide-react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { useAuth } from "@/lib/auth-context";
 import { usePlayFound } from "@/lib/settings-context";
 
-const navItems = [
+const playerNav = [
   { href: "/catalog", label: "Каталог", icon: Gamepad2 },
   { href: "/clips", label: "Ролики", icon: Clapperboard },
-  { href: "/forum", label: "Форум", icon: MessageSquare },
-  { href: "/jobs", label: "Вакансии", icon: Briefcase }
+  { href: "/forum", label: "Форум", icon: MessageSquare }
 ] as const;
 
 export function Header() {
@@ -41,36 +39,12 @@ export function Header() {
   const closeMenu = () => setMenuOpen(false);
 
   const nav = (
-    <nav className="flex flex-col gap-1 xl:flex-row xl:items-center xl:gap-1.5">
-      <Link
-        href="/"
-        onClick={closeMenu}
-        className={`inline-flex whitespace-nowrap rounded-full px-3 py-2 text-sm font-black leading-none transition ${
-          pathname === "/"
-            ? "bg-[color-mix(in_srgb,var(--accent)_15%,transparent)] text-[var(--accent-2)]"
-            : "text-[var(--muted-strong)] hover:bg-[color-mix(in_srgb,var(--accent)_9%,transparent)] hover:text-[var(--text)]"
-        }`}
-      >
-        Главная
-      </Link>
-      {navItems.map((item) => {
-        const active = pathname.startsWith(item.href);
+    <nav className="flex flex-col gap-1 xl:flex-row xl:items-center xl:gap-1">
+      <NavLink href="/" label="Главная" active={pathname === "/"} onClick={closeMenu} />
+      {playerNav.map((item) => {
         const Icon = item.icon;
-
         return (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={closeMenu}
-            className={`inline-flex whitespace-nowrap rounded-full px-3 py-2 text-sm font-black leading-none transition ${
-              active
-                ? "bg-[color-mix(in_srgb,var(--accent)_15%,transparent)] text-[var(--accent-2)]"
-                : "text-[var(--muted-strong)] hover:bg-[color-mix(in_srgb,var(--accent)_9%,transparent)] hover:text-[var(--text)]"
-            }`}
-          >
-            <Icon className="mr-1.5 shrink-0" size={15} />
-            {item.label}
-          </Link>
+          <NavLink key={item.href} href={item.href} label={item.label} active={pathname.startsWith(item.href)} onClick={closeMenu} icon={<Icon size={15} />} />
         );
       })}
     </nav>
@@ -78,16 +52,16 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[color-mix(in_srgb,var(--bg)_86%,transparent)] backdrop-blur-2xl">
-        <div className="container-shell flex min-h-[4.35rem] items-center justify-between gap-3">
+      <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[color-mix(in_srgb,var(--bg)_90%,transparent)] backdrop-blur-2xl">
+        <div className="mx-auto flex min-h-[4.35rem] w-full max-w-[1440px] items-center justify-between gap-2 px-2 sm:px-0">
           <Link href="/" className="group flex min-w-0 shrink-0 items-center gap-2.5">
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-[var(--line-strong)] bg-[color-mix(in_srgb,var(--accent)_14%,transparent)] shadow-glow transition group-hover:scale-105">
               <Gamepad2 size={22} color="var(--accent-2)" />
             </span>
             <span className="hidden min-w-0 flex-col leading-none sm:flex">
-              <span className="text-lg font-black tracking-normal">PlayFound</span>
-              <span className="mt-1 max-w-[8.6rem] truncate text-[0.66rem] font-black uppercase tracking-[0.08em] text-[var(--muted)]">
-                Игры для открытия
+              <span className="whitespace-nowrap text-lg font-black tracking-normal">PlayFound</span>
+              <span className="mt-1 hidden whitespace-nowrap text-[0.64rem] font-black uppercase tracking-[0.08em] text-[var(--muted)] 2xl:block">
+                инди-платформа
               </span>
             </span>
           </Link>
@@ -110,12 +84,7 @@ export function Header() {
             >
               <Bell size={17} />
             </Link>
-            <button
-              type="button"
-              className="btn btn-ghost h-10 w-10 px-0"
-              aria-label="Настройки"
-              onClick={() => setSettingsOpen(true)}
-            >
+            <button type="button" className="btn btn-ghost h-10 w-10 px-0" aria-label="Настройки" onClick={() => setSettingsOpen(true)}>
               <Settings size={18} />
             </button>
 
@@ -136,19 +105,14 @@ export function Header() {
               <>
                 <Link href="/profile" className="btn btn-secondary hidden md:flex">
                   <User size={17} />
-                  <span className="max-w-28 truncate" style={{ color: currentUser?.nicknameColor }}>
+                  <span className="max-w-24 truncate" style={{ color: currentUser?.nicknameColor }}>
                     {session.activeRole === "developer" ? developerProfile?.displayName ?? session.displayName : session.displayName}
                   </span>
                 </Link>
                 {session.activeRole === "developer" ? (
                   <>
-                    <Link href="/developer/games" className="btn btn-secondary hidden lg:flex">
-                      Мои игры
-                    </Link>
-                    <Link href="/submit" className="btn btn-primary hidden lg:flex">
-                      <Plus size={17} />
-                      Добавить
-                    </Link>
+                    <Link href="/developer/games" className="btn btn-secondary hidden 2xl:flex">Мои игры</Link>
+                    <Link href="/submit" className="btn btn-primary hidden 2xl:flex"><Plus size={17} /> Добавить</Link>
                   </>
                 ) : null}
                 <button type="button" className="btn btn-ghost hidden md:flex" onClick={logout}>
@@ -160,23 +124,12 @@ export function Header() {
 
             {loaded && session?.activeRole === "admin" ? (
               <>
-                <Link href="/admin" className="btn btn-primary hidden md:flex">
-                  <ShieldCheck size={17} />
-                  Админка
-                </Link>
-                <button type="button" className="btn btn-ghost hidden md:flex" onClick={logout}>
-                  <LogOut size={17} />
-                  Выйти
-                </button>
+                <Link href="/admin" className="btn btn-primary hidden md:flex"><ShieldCheck size={17} /> Админка</Link>
+                <button type="button" className="btn btn-ghost hidden md:flex" onClick={logout}><LogOut size={17} /> Выйти</button>
               </>
             ) : null}
 
-            <button
-              type="button"
-              className="btn btn-secondary h-10 w-10 px-0 xl:hidden"
-              aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
-              onClick={() => setMenuOpen((current) => !current)}
-            >
+            <button type="button" className="btn btn-secondary h-10 w-10 px-0 xl:hidden" aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"} onClick={() => setMenuOpen((current) => !current)}>
               {menuOpen ? <X size={19} /> : <Menu size={19} />}
             </button>
           </div>
@@ -188,49 +141,27 @@ export function Header() {
               {nav}
               {loaded && !session ? (
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <Link href="/login" onClick={closeMenu} className="btn btn-secondary">
-                    <LogIn size={18} />
-                    Войти
-                  </Link>
-                  <Link href="/register" onClick={closeMenu} className="btn btn-primary">
-                    <UserPlus size={18} />
-                    Регистрация
-                  </Link>
+                  <Link href="/login" onClick={closeMenu} className="btn btn-secondary"><LogIn size={18} /> Войти</Link>
+                  <Link href="/register" onClick={closeMenu} className="btn btn-primary"><UserPlus size={18} /> Регистрация</Link>
                 </div>
               ) : null}
               {loaded && session && session.activeRole !== "admin" ? (
                 <div className="grid gap-2">
-                  <Link href="/profile" onClick={closeMenu} className="btn btn-secondary">
-                    <User size={18} />
-                    Профиль
-                  </Link>
+                  <Link href="/profile" onClick={closeMenu} className="btn btn-secondary"><User size={18} /> Профиль</Link>
                   {session.activeRole === "developer" ? (
                     <>
-                      <Link href="/developer/games" onClick={closeMenu} className="btn btn-secondary">
-                        Мои игры
-                      </Link>
-                      <Link href="/submit" onClick={closeMenu} className="btn btn-primary">
-                        <Plus size={18} />
-                        Добавить игру
-                      </Link>
+                      <Link href="/developer/games" onClick={closeMenu} className="btn btn-secondary">Мои игры</Link>
+                      <Link href="/submit" onClick={closeMenu} className="btn btn-primary"><Plus size={18} /> Добавить игру</Link>
+                      <Link href="/jobs" onClick={closeMenu} className="btn btn-secondary">Вакансии</Link>
                     </>
                   ) : null}
-                  <button type="button" className="btn btn-ghost" onClick={logout}>
-                    <LogOut size={18} />
-                    Выйти
-                  </button>
+                  <button type="button" className="btn btn-ghost" onClick={logout}><LogOut size={18} /> Выйти</button>
                 </div>
               ) : null}
               {loaded && session?.activeRole === "admin" ? (
                 <div className="grid gap-2">
-                  <Link href="/admin" onClick={closeMenu} className="btn btn-primary">
-                    <ShieldCheck size={18} />
-                    Админка
-                  </Link>
-                  <button type="button" className="btn btn-ghost" onClick={logout}>
-                    <LogOut size={18} />
-                    Выйти
-                  </button>
+                  <Link href="/admin" onClick={closeMenu} className="btn btn-primary"><ShieldCheck size={18} /> Админка</Link>
+                  <button type="button" className="btn btn-ghost" onClick={logout}><LogOut size={18} /> Выйти</button>
                 </div>
               ) : null}
             </div>
@@ -240,5 +171,22 @@ export function Header() {
 
       <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </>
+  );
+}
+
+function NavLink({ href, label, active, icon, onClick }: { href: string; label: string; active: boolean; icon?: ReactNode; onClick: () => void }) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`inline-flex items-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-black leading-none transition ${
+        active
+          ? "bg-[color-mix(in_srgb,var(--accent)_15%,transparent)] text-[var(--accent-2)]"
+          : "text-[var(--muted-strong)] hover:bg-[color-mix(in_srgb,var(--accent)_9%,transparent)] hover:text-[var(--text)]"
+      }`}
+    >
+      {icon ? <span className="mr-1.5 shrink-0">{icon}</span> : null}
+      {label}
+    </Link>
   );
 }

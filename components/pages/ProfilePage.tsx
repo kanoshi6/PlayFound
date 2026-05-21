@@ -4,17 +4,20 @@ import Link from "next/link";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import {
   Check,
+  Clapperboard,
   Copy,
   Gamepad2,
   Heart,
   ImagePlus,
   Palette,
+  MessageCircle,
   Send,
   User,
   UserPlus,
   X
 } from "lucide-react";
 import { GameCard } from "@/components/GameCard";
+import { getClipInteractions, type ClipInteraction } from "@/lib/clip-interactions";
 import {
   getUsers,
   useAuth,
@@ -43,6 +46,7 @@ export function ProfilePage() {
   const [error, setError] = useState<AuthError | null>(null);
   const [copied, setCopied] = useState(false);
   const [avatarValue, setAvatarValue] = useState("");
+  const [clipInteractions, setClipInteractions] = useState<ClipInteraction[]>([]);
 
   const refreshUsers = () => {
     setUsers(getUsers());
@@ -53,6 +57,15 @@ export function ProfilePage() {
     refreshUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
+  useEffect(() => {
+    if (currentUser?.id) {
+      setClipInteractions(getClipInteractions(currentUser.id));
+    } else {
+      setClipInteractions([]);
+    }
+  }, [currentUser?.id]);
 
   const user = useMemo(() => {
     if (!currentUser) {
@@ -369,6 +382,50 @@ export function ProfilePage() {
               <p className="leading-7 muted">Библиотека пока пустая. Добавляй игры в wishlist — они появятся здесь.</p>
             )}
           </section>
+
+          <section className="surface rounded-[1.75rem] p-6 reveal-card">
+            <div className="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-end">
+              <div>
+                <span className="eyebrow">
+                  <Clapperboard size={15} />
+                  Ролики
+                </span>
+                <h2 className="mt-4 text-3xl font-black">Лайки и комментарии к роликам</h2>
+                <p className="mt-3 leading-7 muted">Всё, что ты лайкнул, сохранил или прокомментировал в Shorts, отображается здесь.</p>
+              </div>
+              <Link href="/clips" className="btn btn-secondary">Открыть ролики</Link>
+            </div>
+
+            {clipInteractions.length > 0 ? (
+              <div className="grid gap-3">
+                {clipInteractions.map((item) => (
+                  <article className="rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4" key={`${item.clipId}-${item.updatedAt}`}>
+                    <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
+                      <div>
+                        <p className="font-black">{item.gameTitle}</p>
+                        <p className="mt-1 text-sm muted">{item.title}</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {item.liked ? <span className="tag"><Heart size={14} /> лайк</span> : null}
+                        {item.saved ? <span className="tag"><Clapperboard size={14} /> сохранено</span> : null}
+                        {item.comments.length > 0 ? <span className="tag"><MessageCircle size={14} /> {item.comments.length}</span> : null}
+                      </div>
+                    </div>
+                    {item.comments.length > 0 ? (
+                      <div className="mt-3 grid gap-2">
+                        {item.comments.slice(0, 2).map((comment) => (
+                          <p className="rounded-xl bg-black/10 px-3 py-2 text-sm leading-6" key={comment.id}>{comment.text}</p>
+                        ))}
+                      </div>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="leading-7 muted">Ты ещё не лайкал и не комментировал ролики. Открой Shorts и попробуй.</p>
+            )}
+          </section>
+
         </div>
       </div>
     </section>

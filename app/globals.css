@@ -383,31 +383,16 @@ body::before {
 .media-frame {
   position: relative;
   overflow: hidden;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02)),
-    var(--media-gradient, linear-gradient(135deg, #102719, #35c66d));
+  background: var(--media-gradient, #101510);
 }
 
-.media-frame::before {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  content: "";
-  background:
-    linear-gradient(120deg, transparent 25%, rgba(255, 255, 255, 0.18), transparent 52%),
-    radial-gradient(circle at 68% 22%, rgba(255, 255, 255, 0.22), transparent 12rem);
-  opacity: 0.62;
-}
-
+.media-frame::before,
 .media-frame::after {
   position: absolute;
   inset: 0;
   pointer-events: none;
   content: "";
-  background-image: linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 100% 8px;
-  mix-blend-mode: overlay;
-  opacity: 0.25;
+  opacity: 0;
 }
 
 .game-card {
@@ -551,4 +536,279 @@ html[data-theme="horrorVhs"] body::before {
     radial-gradient(circle at 20% 15%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 20rem),
     radial-gradient(circle at 80% 30%, color-mix(in srgb, var(--cyan) 14%, transparent), transparent 18rem),
     linear-gradient(135deg, color-mix(in srgb, var(--panel-strong) 90%, transparent), color-mix(in srgb, var(--panel-soft) 75%, transparent));
+}
+
+.page-transition {
+  animation: page-slide-in 420ms cubic-bezier(.2,.75,.2,1) both;
+}
+
+@keyframes page-slide-in {
+  from { opacity: 0; transform: translateY(14px); filter: blur(8px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.store-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.65fr) minmax(0, 0.9fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.store-feature {
+  position: relative;
+  min-height: 23rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1.6rem;
+  background: var(--panel-strong);
+  box-shadow: var(--shadow);
+  isolation: isolate;
+  transition:
+    transform 260ms cubic-bezier(.2,.75,.2,1),
+    border-color 260ms ease,
+    box-shadow 260ms ease;
+}
+
+.store-feature-large {
+  min-height: 27rem;
+}
+
+.store-feature:hover {
+  z-index: 3;
+  transform: translateY(-5px) scale(1.018);
+  border-color: var(--line-strong);
+  box-shadow: 0 32px 110px color-mix(in srgb, var(--accent) 16%, rgba(0,0,0,.55));
+}
+
+.store-feature .media-frame,
+.promo-tile .media-frame {
+  background: #111;
+}
+
+.store-feature .media-frame::before,
+.store-feature .media-frame::after,
+.promo-tile .media-frame::before,
+.promo-tile .media-frame::after {
+  opacity: 0;
+}
+
+.promo-rail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(12rem, 1fr));
+  gap: 1rem;
+}
+
+.promo-tile {
+  position: relative;
+  min-height: 23rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--panel-strong);
+  box-shadow: var(--shadow);
+  transition:
+    transform 240ms cubic-bezier(.2,.75,.2,1),
+    border-color 240ms ease,
+    box-shadow 240ms ease;
+}
+
+.promo-tile:hover {
+  transform: translateY(-6px) scale(1.025);
+  border-color: var(--line-strong);
+  box-shadow: 0 30px 90px color-mix(in srgb, var(--accent) 13%, rgba(0,0,0,.5));
+}
+
+.game-card {
+  will-change: transform;
+}
+
+.game-card:hover {
+  transform: translateY(-7px) scale(1.015);
+}
+
+.game-card-actions {
+  transform: translateY(2px);
+  transition: transform 220ms ease;
+}
+
+.game-card:hover .game-card-actions {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 1024px) {
+  .store-hero-grid,
+  .promo-rail {
+    grid-template-columns: 1fr;
+  }
+
+  .store-feature,
+  .store-feature-large,
+  .promo-tile {
+    min-height: 20rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .store-feature,
+  .store-feature-large,
+  .promo-tile {
+    min-height: 18rem;
+    border-radius: 1.25rem;
+  }
+}
+
+/* V4 polish: store-like shelves, page transitions and stronger theme personalities */
+.page-transition {
+  animation: route-enter 420ms cubic-bezier(.22,.88,.28,1) both;
+}
+
+@keyframes route-enter {
+  from { opacity: 0; transform: translateY(10px) scale(0.992); filter: blur(3px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+.media-frame {
+  background: var(--panel-strong);
+}
+
+.media-frame::before {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.04), rgba(0,0,0,0.46));
+  opacity: 0.72;
+}
+
+.media-frame::after {
+  opacity: 0.08;
+}
+
+.gog-shelf,
+.store-lane {
+  position: relative;
+}
+
+.store-banner {
+  transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
+}
+
+.store-banner:hover {
+  transform: translateY(-4px) scale(1.012);
+  border-color: var(--line-strong);
+  box-shadow: 0 30px 90px color-mix(in srgb, var(--accent) 14%, rgba(0,0,0,.58));
+}
+
+.store-banner img,
+.promo-tile img,
+.gog-card img {
+  transition: transform 520ms cubic-bezier(.2,.8,.2,1), filter 280ms ease;
+}
+
+.store-banner:hover img,
+.promo-tile:hover img,
+.gog-card:hover img {
+  transform: scale(1.07);
+  filter: saturate(1.08) contrast(1.03);
+}
+
+.store-banner-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,.80), rgba(0,0,0,.28) 48%, rgba(0,0,0,.08));
+}
+
+.promo-tile {
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.promo-tile:hover {
+  transform: translateY(-5px);
+  border-color: var(--line-strong);
+  box-shadow: 0 26px 80px color-mix(in srgb, var(--accent) 12%, rgba(0,0,0,.55));
+}
+
+.gog-card {
+  overflow: hidden;
+  box-shadow: 0 18px 55px rgba(0,0,0,.26);
+}
+
+.gog-card:hover {
+  transform: translateY(-6px) scale(1.012);
+  z-index: 4;
+}
+
+.gog-card:hover .gog-hover-panel {
+  opacity: 1;
+  transform: translateY(-0.35rem);
+}
+
+.clip-viewer {
+  animation: viewer-in 240ms ease both;
+}
+
+@keyframes viewer-in {
+  from { opacity: 0; transform: translateY(18px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+html[data-theme="streetStyle"] .btn,
+html[data-theme="streetStyle"] .surface,
+html[data-theme="streetStyle"] .glass-card {
+  border-radius: 1rem 1.7rem 1rem 1.35rem;
+}
+
+html[data-theme="streetStyle"] .btn {
+  transform: rotate(-0.3deg);
+  box-shadow: 4px 4px 0 color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+html[data-theme="pixel90s"] body {
+  image-rendering: pixelated;
+}
+
+html[data-theme="pixel90s"] .surface,
+html[data-theme="pixel90s"] .glass-card,
+html[data-theme="pixel90s"] .game-card {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent), 0 24px 80px rgba(0,0,0,.44);
+}
+
+html[data-theme="darkNeon"] .btn-primary,
+html[data-theme="darkNeon"] .shadow-glow {
+  box-shadow: 0 0 32px color-mix(in srgb, var(--accent) 42%, transparent), 0 0 72px color-mix(in srgb, var(--accent-2) 18%, transparent);
+}
+
+html[data-theme="fantasyScroll"] .tag,
+html[data-theme="fantasyScroll"] .btn,
+html[data-theme="fantasyScroll"] .surface,
+html[data-theme="fantasyScroll"] .glass-card {
+  border-radius: .85rem;
+}
+
+html[data-theme="arcadeClub"] .btn-primary {
+  box-shadow: 0 8px 0 color-mix(in srgb, var(--accent) 35%, #000), 0 24px 70px rgba(0,0,0,.42);
+}
+
+html[data-theme="horrorVhs"] .page-transition {
+  animation: route-enter 420ms ease both, vhs-flicker 2.5s steps(2,end) infinite;
+}
+
+@keyframes vhs-flicker {
+  0%, 100% { filter: none; }
+  48% { filter: contrast(1.02) saturate(.95); }
+  50% { filter: contrast(1.18) saturate(.8); }
+  52% { filter: none; }
+}
+
+html[data-theme="softIndie"] .btn,
+html[data-theme="softIndie"] .surface,
+html[data-theme="softIndie"] .glass-card,
+html[data-theme="softIndie"] .game-card {
+  border-radius: 1.75rem;
+}
+
+@media (max-width: 768px) {
+  .store-banner:hover,
+  .promo-tile:hover,
+  .gog-card:hover {
+    transform: none;
+  }
+
+  .gog-hover-panel {
+    display: none !important;
+  }
 }

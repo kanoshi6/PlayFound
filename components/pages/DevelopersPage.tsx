@@ -41,7 +41,7 @@ export function DevelopersPage() {
               Публикуй игры, ролики, вакансии и собирай аудиторию
             </h1>
             <p className="mt-5 text-lg leading-8 muted">
-              Разработчик в PlayFound получает отдельный профиль, страницу заявок, доступ к отправке игр на модерацию, mock-статистику, вакансии и будущие инструменты продаж без подписочной модели.
+              Разработчик в PlayFound получает отдельный профиль, страницу заявок, доступ к отправке игр на модерацию, mock-статистику, вакансии и будущие инструменты продаж.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               {loaded && !session ? (
@@ -142,9 +142,9 @@ export function DevelopersPage() {
       <section className="container-shell section-pad">
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
-            <h2 className="text-3xl font-black sm:text-4xl">Монетизация без подписок</h2>
+            <h2 className="text-3xl font-black sm:text-4xl">Монетизация магазина</h2>
             <p className="mt-3 leading-7 muted">
-              PlayFound не продаёт подписку игрокам. В будущей версии разработчик сможет выбрать бесплатную игру, разовую покупку, донат, промокоды или скидку.
+              В будущей версии разработчик сможет выбрать бесплатную игру, разовую покупку, донат, промокоды или скидку.
             </p>
           </div>
           <Link href="/jobs" className="btn btn-secondary">Вакансии</Link>
@@ -152,7 +152,7 @@ export function DevelopersPage() {
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[
             ["Free", "Бесплатная игра или демо для роста аудитории."],
-            ["One-time purchase", "Разовая покупка без подписки."],
+            ["One-time purchase", "Разовая покупка игры."],
             ["Donations", "Добровольная поддержка автора."],
             ["Promo codes", "Ключи и промокоды для тестеров и прессы."]
           ].map(([title, text]) => (

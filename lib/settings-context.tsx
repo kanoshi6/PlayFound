@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import {
   createContext,
   useCallback,
@@ -149,7 +150,7 @@ function sanitizeWishlist(value: unknown): string[] {
   return value.filter((item): item is string => typeof item === "string");
 }
 
-export function PlayFoundProvider({ children }: { children: React.ReactNode }) {
+export function PlayFoundProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<PlayFoundSettings>(defaultSettings);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);

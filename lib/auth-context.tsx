@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import {
   createContext,
   useCallback,
@@ -469,7 +470,7 @@ function createSession(
   };
 }
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [loaded, setLoaded] = useState(false);
   const [session, setSession] = useState<AuthSession | null>(null);
   const [users, setUsers] = useState<UserAccount[]>([]);

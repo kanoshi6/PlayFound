@@ -83,12 +83,12 @@ export const games: Game[] = [
     },
     rating: 4.8,
     interest: 94,
-    image: "linear-gradient(135deg, #07150f, #184f34 45%, #6be68e)",
-    banner: "linear-gradient(120deg, #020503, #0e3022 38%, #2b7551 72%, #9bf2ad)",
+    image: "/games/signal-from-taiga/cover.svg",
+    banner: "/games/signal-from-taiga/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #0b100d, #253a2e, #62d97d)",
-      "linear-gradient(135deg, #06130d, #315441, #87eeb0)",
-      "linear-gradient(135deg, #141716, #1c3b2e, #34b563)"
+      "/games/signal-from-taiga/screen-1.svg",
+      "/games/signal-from-taiga/screen-2.svg",
+      "/games/signal-from-taiga/screen-3.svg"
     ],
     links: [
       { label: "Steam", url: "https://store.steampowered.com/" },
@@ -137,12 +137,12 @@ export const games: Game[] = [
     },
     rating: 4.6,
     interest: 87,
-    image: "linear-gradient(135deg, #0d1811, #356144 48%, #d3b562)",
-    banner: "linear-gradient(120deg, #08100b, #2d563d 44%, #73cc83 74%, #f0c85b)",
+    image: "/games/mossbound-courier/cover.svg",
+    banner: "/games/mossbound-courier/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #111b12, #41674a, #d9be6f)",
-      "linear-gradient(135deg, #132117, #4c8051, #78e5a1)",
-      "linear-gradient(135deg, #081009, #31583d, #c9a94e)"
+      "/games/mossbound-courier/screen-1.svg",
+      "/games/mossbound-courier/screen-2.svg",
+      "/games/mossbound-courier/screen-3.svg"
     ],
     links: [
       { label: "Steam", url: "https://store.steampowered.com/" },
@@ -189,12 +189,12 @@ export const games: Game[] = [
     },
     rating: 4.7,
     interest: 91,
-    image: "linear-gradient(135deg, #100b18, #0c6f55 44%, #35e878 72%, #45c8ff)",
-    banner: "linear-gradient(120deg, #08060f, #123c34 42%, #33d774 68%, #54d6ff)",
+    image: "/games/neon-babushka/cover.svg",
+    banner: "/games/neon-babushka/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #160b25, #0f7259, #38e96d)",
-      "linear-gradient(135deg, #0b101a, #1d7c67, #5fd5ff)",
-      "linear-gradient(135deg, #110817, #165743, #d7f45a)"
+      "/games/neon-babushka/screen-1.svg",
+      "/games/neon-babushka/screen-2.svg",
+      "/games/neon-babushka/screen-3.svg"
     ],
     links: [
       { label: "itch.io", url: "https://itch.io/" },
@@ -242,12 +242,12 @@ export const games: Game[] = [
     },
     rating: 4.5,
     interest: 83,
-    image: "linear-gradient(135deg, #091013, #1b4d46 48%, #b7f4ff)",
-    banner: "linear-gradient(120deg, #030607, #143332 42%, #2f887d 72%, #d4fbff)",
+    image: "/games/polar-colony-9/cover.svg",
+    banner: "/games/polar-colony-9/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #0a1114, #285b58, #b9eff8)",
-      "linear-gradient(135deg, #101719, #335a5b, #78e4d2)",
-      "linear-gradient(135deg, #050707, #183837, #e7fbff)"
+      "/games/polar-colony-9/screen-1.svg",
+      "/games/polar-colony-9/screen-2.svg",
+      "/games/polar-colony-9/screen-3.svg"
     ],
     links: [
       { label: "VK Play", url: "https://vkplay.ru/" },
@@ -293,12 +293,12 @@ export const games: Game[] = [
     },
     rating: 4.9,
     interest: 96,
-    image: "linear-gradient(135deg, #f6f0d9, #71c98a 46%, #1f4630)",
-    banner: "linear-gradient(120deg, #fff7dc, #a3e0ab 38%, #2b6f46 74%, #08140d)",
+    image: "/games/paper-metro/cover.svg",
+    banner: "/games/paper-metro/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #f4eed7, #9ad9a4, #24583a)",
-      "linear-gradient(135deg, #fff4d2, #6ec489, #14321f)",
-      "linear-gradient(135deg, #e8dfc2, #b6e48e, #336d49)"
+      "/games/paper-metro/screen-1.svg",
+      "/games/paper-metro/screen-2.svg",
+      "/games/paper-metro/screen-3.svg"
     ],
     links: [
       { label: "itch.io", url: "https://itch.io/" },
@@ -344,12 +344,12 @@ export const games: Game[] = [
     },
     rating: 4.4,
     interest: 78,
-    image: "linear-gradient(135deg, #070915, #23436e 45%, #6be58d)",
-    banner: "linear-gradient(120deg, #03040b, #172c4d 45%, #48a782 70%, #d9ffb7)",
+    image: "/games/letters-to-orbit/cover.svg",
+    banner: "/games/letters-to-orbit/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #070915, #263c6d, #7ce19d)",
-      "linear-gradient(135deg, #0d1020, #1c4e73, #e1f0a5)",
-      "linear-gradient(135deg, #05060d, #344478, #6dd9c7)"
+      "/games/letters-to-orbit/screen-1.svg",
+      "/games/letters-to-orbit/screen-2.svg",
+      "/games/letters-to-orbit/screen-3.svg"
     ],
     links: [
       { label: "RuStore", url: "https://www.rustore.ru/" },
@@ -396,12 +396,12 @@ export const games: Game[] = [
     },
     rating: 4.3,
     interest: 74,
-    image: "linear-gradient(135deg, #17120d, #5c5437 45%, #46d977)",
-    banner: "linear-gradient(120deg, #0b0805, #3d3828 42%, #907a3d 67%, #52e078)",
+    image: "/games/guild-of-rust/cover.svg",
+    banner: "/games/guild-of-rust/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #17110b, #5f5130, #41d873)",
-      "linear-gradient(135deg, #0d0c09, #4f4637, #b48c3c)",
-      "linear-gradient(135deg, #1b140c, #73643b, #83e194)"
+      "/games/guild-of-rust/screen-1.svg",
+      "/games/guild-of-rust/screen-2.svg",
+      "/games/guild-of-rust/screen-3.svg"
     ],
     links: [
       { label: "Steam", url: "https://store.steampowered.com/" },
@@ -447,12 +447,12 @@ export const games: Game[] = [
     },
     rating: 4.6,
     interest: 89,
-    image: "linear-gradient(135deg, #050804, #18351c 48%, #8af05d)",
-    banner: "linear-gradient(120deg, #010302, #102111 44%, #286e2b 72%, #b7ff5b)",
+    image: "/games/blackout-garden/cover.svg",
+    banner: "/games/blackout-garden/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #030602, #21431f, #90ef57)",
-      "linear-gradient(135deg, #080c07, #31562b, #d5fb74)",
-      "linear-gradient(135deg, #0b0e07, #19361b, #54dd65)"
+      "/games/blackout-garden/screen-1.svg",
+      "/games/blackout-garden/screen-2.svg",
+      "/games/blackout-garden/screen-3.svg"
     ],
     links: [
       { label: "itch.io", url: "https://itch.io/" },
@@ -499,12 +499,12 @@ export const games: Game[] = [
     },
     rating: 4.2,
     interest: 72,
-    image: "linear-gradient(135deg, #0b1010, #1d6362 46%, #37d56f)",
-    banner: "linear-gradient(120deg, #040606, #184545 44%, #1fae86 72%, #e4f56c)",
+    image: "/games/volga-drift-tactics/cover.svg",
+    banner: "/games/volga-drift-tactics/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #071010, #216c68, #41d977)",
-      "linear-gradient(135deg, #0e1110, #4c7447, #f0d566)",
-      "linear-gradient(135deg, #040707, #1f5254, #7ae59e)"
+      "/games/volga-drift-tactics/screen-1.svg",
+      "/games/volga-drift-tactics/screen-2.svg",
+      "/games/volga-drift-tactics/screen-3.svg"
     ],
     links: [
       { label: "VK Play", url: "https://vkplay.ru/" },
@@ -550,12 +550,12 @@ export const games: Game[] = [
     },
     rating: 4.1,
     interest: 69,
-    image: "linear-gradient(135deg, #10151b, #3c5f65 46%, #9ce878)",
-    banner: "linear-gradient(120deg, #05080b, #233b50 45%, #69a978 72%, #fff08d)",
+    image: "/games/tiny-cosmodrome/cover.svg",
+    banner: "/games/tiny-cosmodrome/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #111a20, #3e6770, #9fed76)",
-      "linear-gradient(135deg, #070d13, #46657d, #f3df76)",
-      "linear-gradient(135deg, #0b1015, #2d5468, #72d99b)"
+      "/games/tiny-cosmodrome/screen-1.svg",
+      "/games/tiny-cosmodrome/screen-2.svg",
+      "/games/tiny-cosmodrome/screen-3.svg"
     ],
     links: [
       { label: "itch.io", url: "https://itch.io/" },
@@ -601,12 +601,12 @@ export const games: Game[] = [
     },
     rating: 4.5,
     interest: 81,
-    image: "linear-gradient(135deg, #100c0d, #3d2d32 43%, #42c870)",
-    banner: "linear-gradient(120deg, #050304, #2b1f25 42%, #675344 70%, #5cde7d)",
+    image: "/games/ashen-tram/cover.svg",
+    banner: "/games/ashen-tram/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #100b0e, #48323b, #48cb71)",
-      "linear-gradient(135deg, #090607, #30262a, #9a7554)",
-      "linear-gradient(135deg, #120d0d, #44373a, #68da89)"
+      "/games/ashen-tram/screen-1.svg",
+      "/games/ashen-tram/screen-2.svg",
+      "/games/ashen-tram/screen-3.svg"
     ],
     links: [
       { label: "Steam", url: "https://store.steampowered.com/" },
@@ -652,12 +652,12 @@ export const games: Game[] = [
     },
     rating: 4.3,
     interest: 76,
-    image: "linear-gradient(135deg, #080d13, #21384a 46%, #63dc72)",
-    banner: "linear-gradient(120deg, #030508, #1a2b39 44%, #315e5b 72%, #87ef8f)",
+    image: "/games/lake-exe/cover.svg",
+    banner: "/games/lake-exe/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #081018, #244053, #6de078)",
-      "linear-gradient(135deg, #10161b, #305063, #a2ef87)",
-      "linear-gradient(135deg, #05070a, #20323f, #59d6ae)"
+      "/games/lake-exe/screen-1.svg",
+      "/games/lake-exe/screen-2.svg",
+      "/games/lake-exe/screen-3.svg"
     ],
     links: [
       { label: "itch.io", url: "https://itch.io/" },
@@ -705,12 +705,12 @@ export const games: Game[] = [
     },
     rating: 4.7,
     interest: 92,
-    image: "linear-gradient(135deg, #090b08, #2b5134 44%, #81f7a8)",
-    banner: "linear-gradient(120deg, #030504, #15311f 40%, #5b7b42 70%, #99f27e)",
+    image: "/games/cavernkind/cover.svg",
+    banner: "/games/cavernkind/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #080807, #3d3325, #79d65e)",
-      "linear-gradient(135deg, #0b100b, #315a35, #c0f27a)",
-      "linear-gradient(135deg, #050706, #5f3c26, #38d574)"
+      "/games/cavernkind/screen-1.svg",
+      "/games/cavernkind/screen-2.svg",
+      "/games/cavernkind/screen-3.svg"
     ],
     links: [
       { label: "Steam", url: "https://store.steampowered.com/" },
@@ -758,12 +758,12 @@ export const games: Game[] = [
     },
     rating: 4.8,
     interest: 95,
-    image: "linear-gradient(135deg, #0e150c, #3e7b3f 45%, #f2cc7a)",
-    banner: "linear-gradient(120deg, #071008, #25532d 40%, #65c86b 70%, #f5d47b)",
+    image: "/games/greenvale-seasons/cover.svg",
+    banner: "/games/greenvale-seasons/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #0b130b, #4f8e43, #ffda86)",
-      "linear-gradient(135deg, #16210e, #82b956, #ffd2a2)",
-      "linear-gradient(135deg, #071207, #3a7744, #9cf2a6)"
+      "/games/greenvale-seasons/screen-1.svg",
+      "/games/greenvale-seasons/screen-2.svg",
+      "/games/greenvale-seasons/screen-3.svg"
     ],
     links: [
       { label: "Steam", url: "https://store.steampowered.com/" },
@@ -810,12 +810,12 @@ export const games: Game[] = [
     },
     rating: 4.4,
     interest: 79,
-    image: "linear-gradient(135deg, #090d16, #24535d 45%, #a4f28c)",
-    banner: "linear-gradient(120deg, #050811, #1b4152 42%, #4ea978 70%, #ddf68b)",
+    image: "/games/starroot-hamlet/cover.svg",
+    banner: "/games/starroot-hamlet/banner.svg",
     screenshots: [
-      "linear-gradient(135deg, #060a13, #1e4961, #9ded8a)",
-      "linear-gradient(135deg, #0d1020, #315f5b, #f3df87)",
-      "linear-gradient(135deg, #050a0c, #3f6b82, #6ee7a7)"
+      "/games/starroot-hamlet/screen-1.svg",
+      "/games/starroot-hamlet/screen-2.svg",
+      "/games/starroot-hamlet/screen-3.svg"
     ],
     links: [
       { label: "itch.io", url: "https://itch.io/" },

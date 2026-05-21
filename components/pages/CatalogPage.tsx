@@ -1,16 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Eye, Search, SlidersHorizontal, Sparkles, Tags } from "lucide-react";
 import { useMemo, useState } from "react";
+import { ArrowRight, Eye, Filter, Search, SlidersHorizontal, Sparkles, Tags } from "lucide-react";
 import { GameCard } from "@/components/GameCard";
 import { GameMedia } from "@/components/GameMedia";
-import { type Genre, type Platform, type PriceType, type Status, games } from "@/lib/games";
-import { usePlayFound } from "@/lib/settings-context";
+import { games, type Genre, type Platform, type PriceType, type Status } from "@/lib/games";
+import { type Currency, type MarketLanguage, usePlayFound } from "@/lib/settings-context";
 
 type SortMode = "newest" | "popular" | "rating" | "price" | "sale" | "demos" | "releases";
 type MultiplayerMode = "all" | "single" | "multi";
-
 type FilterTag = "all" | "cozy" | "horror" | "demo" | "pixel" | "story" | "survival";
 
 const genres: Genre[] = ["horror", "rpg", "platformer", "survival", "puzzle", "visualNovel", "strategy", "roguelike"];
@@ -27,9 +26,22 @@ const tagFilters: Array<{ value: FilterTag; label: string }> = [
   { value: "story", label: "сюжет" },
   { value: "survival", label: "выживание" }
 ];
+const currencies: Currency[] = ["USD", "EUR", "RUB", "GBP", "PLN", "UAH", "CNY", "JPY", "KRW"];
+const marketLanguages: Array<{ value: MarketLanguage; label: string }> = [
+  { value: "ru", label: "Русский" },
+  { value: "en", label: "English" },
+  { value: "es", label: "Español" },
+  { value: "de", label: "Deutsch" },
+  { value: "fr", label: "Français" },
+  { value: "pl", label: "Polski" },
+  { value: "uk", label: "Українська" },
+  { value: "zh", label: "中文" },
+  { value: "ja", label: "日本語" },
+  { value: "ko", label: "한국어" }
+];
 
 export function CatalogPage() {
-  const { settings, t, formatPrice } = usePlayFound();
+  const { settings, setSetting, t, formatPrice } = usePlayFound();
   const [query, setQuery] = useState("");
   const [genre, setGenre] = useState<Genre | "all">("all");
   const [platform, setPlatform] = useState<Platform | "all">("all");
@@ -40,7 +52,10 @@ export function CatalogPage() {
   const [multiplayer, setMultiplayer] = useState<MultiplayerMode>("all");
   const [saleOnly, setSaleOnly] = useState(false);
 
-  const spotlight = games[0];
+  const highlights = [...games].sort((a, b) => b.interest - a.interest).slice(0, 5);
+  const mainHighlight = highlights[0];
+  const sideHighlights = highlights.slice(1, 3);
+  const promoGames = games.filter((game) => game.priceType === "paid").slice(0, 4);
 
   const filteredGames = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -95,35 +110,54 @@ export function CatalogPage() {
 
   return (
     <section className="container-shell section-pad">
-      <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
+      <div className="mb-8 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
         <div>
           <span className="eyebrow"><SlidersHorizontal size={15} /> Каталог PlayFound</span>
-          <h1 className="mt-5 text-4xl font-black tracking-normal sm:text-6xl">Игры без шума: демо, релизы, скидки и находки</h1>
-          <p className="mt-5 text-lg leading-8 muted">
-            Каталог стал ближе к современному игровому магазину: крупные карточки, быстрый предпросмотр, цена в выбранной валюте, языки, платформы и удобные фильтры.
+          <h1 className="mt-5 text-4xl font-black tracking-normal sm:text-6xl">Магазинные витрины для инди-игр</h1>
+          <p className="mt-5 max-w-3xl text-lg leading-8 muted">
+            Большие баннеры, полки с подборками, карточки с быстрым предпросмотром, валюты, языки и фильтры. Вдохновлено удобством игровых магазинов, но визуальный стиль PlayFound остаётся оригинальным.
           </p>
         </div>
-        <Link href={`/games/${spotlight.slug}`} className="interactive-card glass-card overflow-hidden rounded-[2rem]">
-          <GameMedia gradient={spotlight.banner} title={spotlight.title} label="Выбор недели" className="aspect-[16/7]" />
-          <div className="p-5">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="tag">Spotlight</span>
-              <span className="tag">{formatPrice(spotlight.priceType, 1)}</span>
-              <span className="tag">{spotlight.platforms.join(" · ")}</span>
-            </div>
-            <h2 className="mt-3 text-2xl font-black">{spotlight.title}</h2>
-            <p className="mt-2 leading-7 muted">{spotlight.shortDescription.ru}</p>
-          </div>
-        </Link>
+        <div className="grid min-w-[18rem] gap-3 rounded-[1.5rem] border border-[var(--line)] bg-[var(--panel-soft)] p-4 sm:grid-cols-2 lg:min-w-[24rem]">
+          <SelectField label="Валюта" value={settings.currency} onChange={(value) => setSetting("currency", value as Currency)} options={currencies.map((item) => ({ value: item, label: item }))} />
+          <SelectField label="Язык игр" value={settings.marketLanguage} onChange={(value) => setSetting("marketLanguage", value as MarketLanguage)} options={marketLanguages} />
+        </div>
       </div>
 
-      <div className="glass-card mt-9 rounded-[1.5rem] p-4 sm:p-5">
+      <section className="gog-shelf">
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <h2 className="text-2xl font-black">Highlights</h2>
+          <Link href={`/games/${mainHighlight.slug}`} className="btn btn-secondary">Открыть витрину <ArrowRight size={17} /></Link>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-[0.8fr_1.4fr_0.8fr]">
+          <StoreBanner game={sideHighlights[0]} label="Demo drop" compact />
+          <StoreBanner game={mainHighlight} label="Featured this week" large />
+          <StoreBanner game={sideHighlights[1]} label="Hot indie" compact />
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <h2 className="text-2xl font-black">Промо и подборки</h2>
+          <span className="tag">скидки, демо, новые релизы</span>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {promoGames.map((game, index) => (
+            <PromoTile game={game} index={index} key={game.id} />
+          ))}
+        </div>
+      </section>
+
+      <div className="glass-card mt-10 rounded-[1.5rem] p-4 sm:p-5">
+        <div className="mb-4 flex items-center gap-2 text-sm font-black uppercase text-[var(--accent-2)]">
+          <Filter size={16} /> Фильтры каталога
+        </div>
         <div className="grid gap-4 lg:grid-cols-[1.3fr_repeat(4,1fr)]">
           <label className="grid gap-2">
             <span className="text-sm font-black">Поиск</span>
             <span className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" size={18} />
-              <input className="input pl-10" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Terraria-like, ферма, хоррор, демо" />
+              <input className="input pl-10" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ферма, хоррор, демо, пиксель" />
             </span>
           </label>
           <SelectField label="Жанр" value={genre} onChange={(value) => setGenre(value as Genre | "all")} options={[{ value: "all", label: "Все" }, ...genres.map((item) => ({ value: item, label: t.genres[item] }))]} />
@@ -132,17 +166,12 @@ export function CatalogPage() {
           <SelectField label="Сортировка" value={sort} onChange={(value) => setSort(value as SortMode)} options={sortModes.map((item) => ({ value: item, label: sortLabel(item) }))} />
         </div>
 
-        <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <SelectField label="Статус" value={status} onChange={(value) => setStatus(value as Status | "all")} options={[{ value: "all", label: "Все" }, ...statuses.map((item) => ({ value: item, label: t.statuses[item] }))]} />
           <SelectField label="Теги" value={tag} onChange={(value) => setTag(value as FilterTag)} options={tagFilters} />
           <SelectField label="Режим" value={multiplayer} onChange={(value) => setMultiplayer(value as MultiplayerMode)} options={[{ value: "all", label: "Любой" }, { value: "single", label: "Одиночная" }, { value: "multi", label: "Мультиплеер" }]} />
-          <div className="rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] p-4">
-            <p className="text-sm font-black">Язык / валюта</p>
-            <p className="mt-2 text-sm font-bold text-[var(--accent-2)]">{settings.marketLanguage.toUpperCase()} · {settings.currency}</p>
-          </div>
           <button type="button" className={`btn ${saleOnly ? "btn-primary" : "btn-secondary"}`} onClick={() => setSaleOnly((value) => !value)}>
-            <Tags size={17} />
-            Игры на распродаже
+            <Tags size={17} /> Игры со скидкой
           </button>
         </div>
       </div>
@@ -169,6 +198,43 @@ export function CatalogPage() {
         </div>
       )}
     </section>
+  );
+}
+
+function StoreBanner({ game, label, large = false, compact = false }: { game: (typeof games)[number]; label: string; large?: boolean; compact?: boolean }) {
+  const { formatPrice } = usePlayFound();
+  const seed = Number(game.id.replace(/\D/g, "")) || 1;
+  return (
+    <Link href={`/games/${game.slug}`} className={`store-banner group relative block overflow-hidden rounded-[1.25rem] border border-[var(--line)] bg-[var(--panel-strong)] shadow-lg ${large ? "min-h-[18rem]" : "min-h-[14rem]"}`}>
+      <GameMedia gradient={game.banner} title={game.title} className={`${large ? "h-full min-h-[18rem]" : "h-full min-h-[14rem]"}`} />
+      <div className="store-banner-overlay absolute inset-0 z-10 flex flex-col justify-end p-5 text-white">
+        <span className="mb-3 w-fit rounded-md border border-white/20 bg-black/35 px-2 py-1 text-xs font-black uppercase backdrop-blur">{label}</span>
+        <p className="text-sm font-bold text-white/75">{compact ? "Выбор игроков" : "Новая витрина"}</p>
+        <h3 className={`${large ? "text-3xl sm:text-4xl" : "text-2xl"} mt-1 font-black leading-tight`}>{game.title}</h3>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <span className="rounded-md bg-[var(--accent)] px-2 py-1 text-sm font-black text-[var(--accent-contrast)]">{formatPrice(game.priceType, seed)}</span>
+          <span className="rounded-md border border-white/20 bg-black/30 px-2 py-1 text-sm font-bold backdrop-blur">{game.platforms.join(" · ")}</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function PromoTile({ game, index }: { game: (typeof games)[number]; index: number }) {
+  return (
+    <Link href={`/games/${game.slug}`} className="promo-tile interactive-card group relative min-h-[19rem] overflow-hidden rounded-[1.25rem] border border-[var(--line)] bg-[var(--panel-strong)]">
+      <GameMedia gradient={game.image} title={game.title} className="absolute inset-0 h-full w-full" />
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-between bg-black/42 p-5 text-center text-white transition group-hover:bg-black/30">
+        <span className="rounded-md border border-white/20 bg-black/30 px-2 py-1 text-xs font-black uppercase backdrop-blur">Promo</span>
+        <div>
+          <h3 className="text-2xl font-black leading-tight">{game.title}</h3>
+          <p className="mt-3 text-sm font-bold text-white/75">до</p>
+          <p className="text-5xl font-black text-[var(--accent-2)]">-{40 + index * 10}%</p>
+          <p className="mt-3 text-sm font-bold text-white/75">{index + 1} дн. до конца</p>
+        </div>
+        <span className="rounded-full border border-white/40 px-5 py-2 text-sm font-black backdrop-blur transition group-hover:bg-white group-hover:text-black">Смотреть</span>
+      </div>
+    </Link>
   );
 }
 

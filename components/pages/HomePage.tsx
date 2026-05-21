@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, Clapperboard, Compass, Gamepad2, Heart, Search, Sparkles, Users } from "lucide-react";
 import { GameCard } from "@/components/GameCard";
@@ -19,7 +20,7 @@ export function HomePage() {
             Находи инди-игры раньше, чем о них заговорят все
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 muted sm:text-xl">
-            PlayFound — игровая платформа для игроков: каталог, короткие ролики, избранное, библиотека, форум, друзья и будущие покупки без подписочной модели.
+            PlayFound — игровая платформа для игроков: каталог, короткие ролики, избранное, библиотека, форум, друзья и будущие покупки инди-игр.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link href="/catalog" className="btn btn-primary">
@@ -33,7 +34,7 @@ export function HomePage() {
             </Link>
           </div>
           <div className="mt-10 grid gap-3 sm:grid-cols-3">
-            {["12 игр в каталоге", "без подписок", "9 валют и 10 языков"].map((stat) => (
+            {["12 игр в каталоге", "разовые покупки", "9 валют и 10 языков"].map((stat) => (
               <div className="rounded-2xl border border-[var(--line)] bg-[var(--panel-soft)] px-4 py-3" key={stat}>
                 <p className="text-sm font-black text-[var(--accent-2)]">{stat}</p>
               </div>
@@ -92,14 +93,14 @@ export function HomePage() {
       <section className="section-pad border-y border-[var(--line)] bg-[color-mix(in_srgb,var(--panel-soft)_58%,transparent)]">
         <div className="container-shell grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
-            <span className="eyebrow"><BadgeCheck size={15} /> Без подписок</span>
-            <h2 className="mt-5 text-4xl font-black tracking-normal sm:text-5xl">Модель как у магазина, а не подписочного сервиса</h2>
+            <span className="eyebrow"><BadgeCheck size={15} /> Покупки и демо</span>
+            <h2 className="mt-5 text-4xl font-black tracking-normal sm:text-5xl">Модель игрового магазина для инди-проектов</h2>
             <p className="mt-4 text-lg leading-8 muted">
-              В PlayFound могут быть бесплатные игры, разовые покупки, донаты, промокоды и скидки. Никаких обязательных подписок для игроков.
+              В PlayFound могут быть бесплатные игры, разовые покупки, донаты, промокоды и скидки. Игрок сразу понимает, что можно скачать, купить или добавить в wishlist.
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            {["Бесплатные демо", "Разовые покупки", "Промокоды", "Донаты авторам", "Скидки", "Будущие платежи через backend"].map((item) => (
+            {["Бесплатные демо", "Разовые покупки", "Промокоды", "Донаты авторам", "Скидки", "Продажи через backend"].map((item) => (
               <article className="glass-card rounded-[1.25rem] p-5" key={item}>
                 <p className="text-xl font-black">{item}</p>
                 <p className="mt-2 text-sm leading-6 muted">Механика описана в концепции и готова для дальнейшей реализации.</p>
@@ -112,7 +113,7 @@ export function HomePage() {
       <section className="container-shell section-pad">
         <div className="grid gap-4 lg:grid-cols-2">
           <AudienceBlock icon={<Gamepad2 size={24} />} title="В первую очередь — игроки" text="Главная ценность PlayFound — найти игру, которую не покажут большие алгоритмы: по жанру, языку, цене, тегам и коротким роликам." href="/catalog" action="Открыть каталог" />
-          <AudienceBlock icon={<Compass size={24} />} title="Разработчики — в футере и кабинете" text="Авторы могут стать разработчиками, но это не должно мешать игрокам. Возможность спрятана в футере и на отдельной странице." href="/developers" action="Для разработчиков" />
+          <AudienceBlock icon={<Compass size={24} />} title="Разработчики — отдельно, не мешая игрокам" text="Авторы могут стать разработчиками, но это не должно мешать игрокам. Возможность спрятана в футере и на отдельной странице." href="/developers" action="Для разработчиков" />
         </div>
       </section>
     </>
@@ -137,7 +138,7 @@ function Showcase({ eyebrow, title, text, games: showcaseGames, compact }: { eye
   );
 }
 
-function AudienceBlock({ icon, title, text, href, action }: { icon: React.ReactNode; title: string; text: string; href: string; action: string }) {
+function AudienceBlock({ icon, title, text, href, action }: { icon: ReactNode; title: string; text: string; href: string; action: string }) {
   return (
     <article className="interactive-card glass-card rounded-[1.75rem] p-7">
       <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[color-mix(in_srgb,var(--accent)_14%,transparent)] text-[var(--accent-2)]">{icon}</span>
