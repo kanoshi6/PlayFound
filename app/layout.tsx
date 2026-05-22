@@ -9,6 +9,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "PlayFound — инди-игры, демо и релизы",
   description:
+  other: {
+    telderi: "a15d6073c7c8865893d2f081337b7208",
+  },
+};
     "PlayFound — игровая платформа для поиска, сохранения, обсуждения и покупки инди-игр.",
   icons: {
     icon: [
